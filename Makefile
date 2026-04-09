@@ -33,7 +33,10 @@ MLX42_LDFLAGS = -lglfw -ldl -lm -lpthread
 # **************************************************************************** #
 
 SRC = $(SRC_DIR)/main.c \
-      $(SRC_DIR)/parser/parser.c
+      $(SRC_DIR)/parser/parser.c \
+      $(SRC_DIR)/parser/split_file.c \
+	  $(SRC_DIR)/parser/parser_config.c \
+
 
 OBJ = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))
 
