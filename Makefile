@@ -36,6 +36,8 @@ SRC = $(SRC_DIR)/main.c \
       $(SRC_DIR)/parser/parser.c \
       $(SRC_DIR)/parser/split_file.c \
 	  $(SRC_DIR)/parser/parser_config.c \
+	  $(SRC_DIR)/exec/raycast.c \
+	  $(SRC_DIR)/exec/init.c \
 
 
 OBJ = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))
