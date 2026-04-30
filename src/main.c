@@ -1,16 +1,16 @@
 #include "cub3D.h"
 
-static void init_game(t_game *game)
-{
-	game->player.pos_x = 0;
-	game->player.pos_y = 0;
+// static void init_game(t_game *game)
+// {
+// 	game->player.pos_x = 0;
+// 	game->player.pos_y = 0;
 
-	game->player.dir_x = -1;
-	game->player.dir_y = 0;
+// 	game->player.dir_x = -1;
+// 	game->player.dir_y = 0;
 
-	game->player.plane_x = 0;
-	game->player.plane_y = 0.66;
-}
+// 	game->player.plane_x = 0;
+// 	game->player.plane_y = 0.66;
+// }
 
 static void render(void *param)
 {
@@ -51,13 +51,20 @@ int	main(int argc, char **argv)
 	// 3. ahora sí inicializas player (esto modifica el mapa)
 	init_player_from_map(&game);
 
-	init_game(&game);
+	// init_game(&game);
 
 	mlx = mlx_init(800, 600, "Cub3D", true);
 	if (!mlx)
 		return (ft_putstr_fd("Error MLX\n", 2), 1);
 
 	game.mlx = mlx;
+
+	game.img = mlx_new_image(mlx, 800, 600);
+	if (!game.img)
+    	return (ft_putstr_fd("Error imagen\n", 2), 1);
+
+	if (mlx_image_to_window(mlx, game.img, 0, 0) < 0)
+    	return (ft_putstr_fd("Error window\n", 2), 1);
 
 	mlx_loop_hook(mlx, render, &game);
 	mlx_loop(mlx);

@@ -12,7 +12,7 @@ C 23,30,35
 SO ./b.png
 
 111
-101
+1N1
 111#ifndef CUB3D_H
 # define CUB3D_H
 
@@ -47,6 +47,8 @@ typedef struct s_game
 	int		c[3];
 
 	mlx_t	*mlx;
+	mlx_image_t	*img;
+
 	t_player	player;
 }	t_game;
 
@@ -64,7 +66,7 @@ void	init_player_from_map(t_game *g);
 #endif
 #include "cub3D.h"
 
-static void	init_game(t_game *game)
+static void init_game(t_game *game)
 {
 	game->player.pos_x = 0;
 	game->player.pos_y = 0;
@@ -76,16 +78,11 @@ static void	init_game(t_game *game)
 	game->player.plane_y = 0.66;
 }
 
-static void	render(void *param)
+static void render(void *param)
 {
-	t_game	*g;
+	t_game *g;
 
 	g = (t_game *)param;
-	if (g->player.pos_x <= 0 || g->player.pos_y <= 0)
-	{
-		ft_putstr_fd("Error: player not initialized\n", 2);
-		exit(1);
-	}
 	raycast(g);
 }
 
@@ -110,13 +107,15 @@ int	main(int argc, char **argv)
 
 	game.map = map;
 
+	// 1. parse config primero
 	parse_config(config, &game);
-	init_player_from_map(&game);
 
-	
-
+	// 2. validar mapa ANTES de modificarlo
 	validate_player(map);
 	validate_map_closed(map);
+
+	// 3. ahora sí inicializas player (esto modifica el mapa)
+	init_player_from_map(&game);
 
 	init_game(&game);
 
@@ -128,81 +127,10 @@ int	main(int argc, char **argv)
 
 	mlx_loop_hook(mlx, render, &game);
 	mlx_loop(mlx);
+
 	mlx_terminate(mlx);
 	return (0);
-}
-
-
-
-// #include "cub3D.h"
-// // #include <stdio.h>
-// // #include <stdlib.h>
-// // #include <fcntl.h>
-// // #include <unistd.h>
-
-// int	main(int argc, char **argv)
-// {
-// 	char	**file;
-// 	char	**config;
-// 	char	**map;
-// 	t_game	game;
-// 	mlx_t	*mlx;
-
-// 	if (argc != 2)
-// 	{
-// 		ft_putstr_fd("Error: Invalid number of arguments\n", 2);
-// 		return (1);
-// 	}
-
-// 	// 🔥 inicializar struct limpio (MUY IMPORTANTE)
-// 	ft_memset(&game, 0, sizeof(t_game));
-
-// 	// 📁 leer archivo
-// 	file = read_file(argv[1]);
-// 	if (!file)
-// 	{
-// 		ft_putstr_fd("Error: Could not read file\n", 2);
-// 		return (1);
-// 	}
-
-// 	// 🧩 split config / map
-// 	split_file(file, &config, &map);
-
-// 	// 🧠 asignar mapa al game
-// 	game.map = map;
-
-// 	// 🚨 validaciones CRÍTICAS
-// 	validate_player(map);
-// 	validate_map_closed(map);
-
-// 	// 🎨 parse config (UNA SOLA VEZ)
-// 	parse_config(config, &game);
-
-// 	// 🧪 debug opcional (puedes borrar luego)
-// 	printf("NO: %s\n", game.no);
-// 	printf("SO: %s\n", game.so);
-// 	printf("WE: %s\n", game.we);
-// 	printf("EA: %s\n", game.ea);
-// 	printf("F: %d,%d,%d\n", game.f[0], game.f[1], game.f[2]);
-// 	printf("C: %d,%d,%d\n", game.c[0], game.c[1], game.c[2]);
-
-// 	// 🪟 iniciar MLX
-// 	mlx = mlx_init(800, 600, "Cub3D", true);
-// 	if (!mlx)
-// 	{
-// 		ft_putstr_fd("Error: Could not initialize MLX42\n", 2);
-// 		return (1);
-// 	}
-
-// 	game.mlx = mlx;
-
-// 	// 🎮 loop (aquí luego metes raycasting)
-// 	mlx_loop(mlx);
-
-// 	// 🧹 cleanup
-// 	mlx_terminate(mlx);
-// 	return (0);
-// }/* ************************************************************************** */
+}/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
@@ -323,7 +251,7 @@ void parse_config(char **config, t_game *game)
 /*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 12:24:12 by idiaz-ca          #+#    #+#             */
-/*   Updated: 2026/04/27 16:40:34 by kfuto            ###   ########.fr       */
+/*   Updated: 2026/04/27 16:42:26 by kfuto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -373,61 +301,51 @@ int is_map_line(char *line)
     return (1);
 }
 // Separa el archivo en configuración y mapa
-void	split_file(char **file, char ***config, char ***map)
+void split_file(char **file, char ***config, char ***map)
 {
-	int	i = 0;
-	int	j;
-	int	k;
-	int map_start = 0;
-	
-	// 1. Buscar inicio del mapa
-	while (file[i] && (is_config_line(file[i]) || file[i][0] == '\n'))
-    	i++;
-	map_start = i;
-	// saltar líneas vacías ENTRE config y mapa
-	while (file[i] && (file[i][0] == '\n' || file[i][0] == '\0'))
-   		i++;
-	printf("LINE [%d]: %s", i, file[i]);
-	// 2. Guardar config
-	*config = malloc(sizeof(char *) * (i + 1));
-	for (j = 0; j < i; j++)
-		(*config)[j] = file[j];
-	(*config)[j] = NULL;
+    int i = 0;
+    int j;
+    int k;
+    int map_start;
 
-	// 3. VALIDAR: no puede haber config después del mapa
-	k = i;
-	while (file[k])
-	{
-		if (is_config_line(file[k]))
-		{
-			ft_putstr_fd("Error: Config after map\n", 2);
-			exit(1);
-		}
-		k++;
-	}
+    // 1. Saltar config + líneas vacías
+    while (file[i] && (is_config_line(file[i]) || is_empty_line(file[i])))
+        i++;
 
-	// 4. Guardar mapa
-	k = 0;
-while (file[map_start + k])
-    k++;
+    map_start = i;
 
-*map = malloc(sizeof(char *) * (k + 1));
-if (!*map)
-    return ;
-
-j = 0;
-int m = 0;
-
-while (j < k)
-{
-    if (!is_empty_line(file[map_start + j]))
+    // 2. CONFIG
+    *config = malloc(sizeof(char *) * (map_start + 1));
+    j = 0;
+    while (j < map_start)
     {
-        (*map)[m] = file[map_start + j];
-        m++;
+        (*config)[j] = file[j];
+        j++;
     }
-    j++;
-}
-(*map)[m] = NULL;
+    (*config)[j] = NULL;
+
+    // 3. MAP (solo líneas válidas)
+    k = 0;
+    while (file[map_start + k])
+        k++;
+
+    *map = malloc(sizeof(char *) * (k + 1));
+    if (!*map)
+        return;
+
+    j = 0;
+    int m = 0;
+
+    while (j < k)
+    {
+        if (!is_empty_line(file[map_start + j]))
+        {
+            (*map)[m] = file[map_start + j];
+            m++;
+        }
+        j++;
+    }
+    (*map)[m] = NULL;
 }
 
 int is_config_line(char *line)
