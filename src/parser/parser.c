@@ -3,14 +3,69 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 12:23:44 by idiaz-ca          #+#    #+#             */
-/*   Updated: 2026/04/09 12:23:46 by idiaz-ca         ###   ########.fr       */
+/*   Updated: 2026/05/02 16:41:13 by kfuto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
+
+void	validate_player(char **map)
+{
+	int	i;
+	int	j;
+	int	count;
+
+	i = 0;
+	count = 0;
+	while (map[i])
+	{
+		j = 0;
+		while (map[i][j])
+		{
+			if (map[i][j] == 'N' || map[i][j] == 'S' || map[i][j] == 'E'
+				|| map[i][j] == 'W')
+				count++;
+			j++;
+		}
+		i++;
+	}
+	if (count != 1)
+	{
+		ft_putstr_fd("Error: Invalid number of players\n", 2);
+		exit(1);
+	}
+}
+
+void	validate_map_closed(char **map)
+{
+	int	y;
+	int	x;
+
+	y = 0;
+	while (map[y])
+	{
+		x = 0;
+		while (map[y][x])
+		{
+			if (map[y][x] == '0' || map[y][x] == 'N' || map[y][x] == 'S'
+				|| map[y][x] == 'E' || map[y][x] == 'W')
+			{
+				if (!is_valid_cell(map, y + 1, x) || !is_valid_cell(map, y - 1,
+						x) || !is_valid_cell(map, y, x + 1)
+					|| !is_valid_cell(map, y, x - 1))
+				{
+					ft_putstr_fd("Error: Map not closed\n", 2);
+					exit(1);
+				}
+			}
+			x++;
+		}
+		y++;
+	}
+}
 
 // Lee el archivo y devuelve un array de strings con su contenido
 char	**read_file(char *filename)
