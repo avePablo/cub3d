@@ -1,66 +1,59 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raycast.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/02 17:51:17 by kfuto             #+#    #+#             */
+/*   Updated: 2026/05/02 17:51:18 by kfuto            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3D.h"
 
-static int	perform_dda(t_game *g, int *map_x, int *map_y, double *side_x,
-		double *side_y, double delta_x, double delta_y, int step_x, int step_y)
+void	perform_dda(t_game *g, t_raycast *r)
 {
 	int	hit;
-	int	side;
 
 	hit = 0;
 	while (!hit)
 	{
-		if (*side_x < *side_y)
+		if (r->side_x < r->side_y)
 		{
-			*side_x += delta_x;
-			*map_x += step_x;
-			side = 0;
+			r->side_x += r->delta_x;
+			r->map_x += r->step_x;
+			r->side = 0;
 		}
 		else
 		{
-			*side_y += delta_y;
-			*map_y += step_y;
-			side = 1;
+			r->side_y += r->delta_y;
+			r->map_y += r->step_y;
+			r->side = 1;
 		}
-		if (get_cell(g, *map_x, *map_y) == '1')
+		if (get_cell(g, r->map_x, r->map_y) == '1')
 			hit = 1;
-		if (*map_x < 0 || *map_y < 0)
+		if (r->map_x < 0 || r->map_y < 0)
 			break ;
-		if (!g->map[*map_y])
+		if (!g->map[r->map_y])
 			break ;
 	}
-	return (side);
 }
 
 void	raycast(t_game *g)
 {
-	int		x;
-	double	camera_x;
-	double	ray_dir_x;
-	double	ray_dir_y;
-	int		map_x;
-	int		map_y;
-	double	delta_x;
-	double	delta_y;
-	double	side_x;
-	double	side_y;
-	int		step_x;
-	int		step_y;
-	int		side;
-	double	perp_wall_dist;
-	int		line_height;
+	t_raycast	r;
+	int			x;
 
 	ft_memset(g->img->pixels, 0, g->img->width * g->img->height * 4);
 	x = 0;
 	while (x < 800)
 	{
-		init_ray(g, x, &camera_x, &ray_dir_x, &ray_dir_y);
-		init_dda(g, ray_dir_x, ray_dir_y, &map_x, &map_y, &delta_x, &delta_y,
-			&side_x, &side_y, &step_x, &step_y);
-		side = perform_dda(g, &map_x, &map_y, &side_x, &side_y, delta_x,
-				delta_y, step_x, step_y);
-		line_height = get_line_height(g, map_x, map_y, ray_dir_x, ray_dir_y,
-				step_x, step_y, side, &perp_wall_dist);
-		draw_column(g, x, -line_height / 2 + 300, line_height / 2 + 300, side);
+		init_ray(g, &r, x);
+		init_dda(g, &r);
+		perform_dda(g, &r);
+		get_line_height(g, &r);
+		draw_column(g, &r, x);
 		x++;
 	}
 }

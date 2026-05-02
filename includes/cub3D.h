@@ -9,14 +9,32 @@
 # include <stdlib.h>
 # include <unistd.h>
 
+typedef struct s_raycast
+{
+	double		camera_x;
+	double		ray_dir_x;
+	double		ray_dir_y;
+	int			map_x;
+	int			map_y;
+	double		delta_x;
+	double		delta_y;
+	double		side_x;
+	double		side_y;
+	int			step_x;
+	int			step_y;
+	int			side;
+	double		perp_wall_dist;
+	int			line_height;
+	int			draw_start;
+	int			draw_end;
+}				t_raycast;
+
 typedef struct s_player
 {
 	double		pos_x;
 	double		pos_y;
-
 	double		dir_x;
 	double		dir_y;
-
 	double		plane_x;
 	double		plane_y;
 }				t_player;
@@ -30,10 +48,8 @@ typedef struct s_game
 	char		*ea;
 	int			f[3];
 	int			c[3];
-
 	mlx_t		*mlx;
 	mlx_image_t	*img;
-
 	t_player	player;
 }				t_game;
 
@@ -43,21 +59,17 @@ void			parse_config(char **config, t_game *game);
 void			raycast(t_game *g);
 void			validate_player(char **map);
 void			validate_map_closed(char **map);
-void			draw_column(t_game *g, int x, int start, int end, int side);
 int				is_config_line(char *line);
 int				is_map_line(char *line);
-void			init_player_from_map(t_game *g);
-void			init_ray(t_game *g, int x, double *camera_x, double *ray_dir_x,
-					double *ray_dir_y);
-void			init_dda(t_game *g, double ray_dir_x, double ray_dir_y,
-					int *map_x, int *map_y, double *delta_x, double *delta_y,
-					double *side_x, double *side_y, int *step_x, int *step_y);
-void			put_pixel(mlx_image_t *img, int x, int y, uint32_t color);
-char			get_cell(t_game *g, int x, int y);
-int				get_line_height(t_game *g, int map_x, int map_y,
-					double ray_dir_x, double ray_dir_y, int step_x, int step_y,
-					int side, double *perp_wall_dist);
 int				is_empty_line(char *line);
 int				is_valid_cell(char **map, int y, int x);
+void			init_player_from_map(t_game *g);
+void			init_ray(t_game *g, t_raycast *r, int x);
+void			init_dda(t_game *g, t_raycast *r);
+void			perform_dda(t_game *g, t_raycast *r);
+void			draw_column(t_game *g, t_raycast *r, int x);
+void			get_line_height(t_game *g, t_raycast *r);
+void			put_pixel(mlx_image_t *img, int x, int y, uint32_t color);
+char			get_cell(t_game *g, int x, int y);
 
 #endif
