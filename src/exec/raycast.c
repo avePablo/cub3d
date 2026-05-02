@@ -6,12 +6,14 @@
 /*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 17:51:17 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/02 17:51:18 by kfuto            ###   ########.fr       */
+/*   Updated: 2026/05/02 19:10:26 by kfuto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
+/* Avanza celda a celda por la cuadricula 
+siguiendo el rayo hasta chocar con una pared */
 void	perform_dda(t_game *g, t_raycast *r)
 {
 	int	hit;
@@ -40,6 +42,8 @@ void	perform_dda(t_game *g, t_raycast *r)
 	}
 }
 
+/* Limpia la imagen y lanza un rayo por cada 
+columna de pantalla para renderizar el frame */
 void	raycast(t_game *g)
 {
 	t_raycast	r;

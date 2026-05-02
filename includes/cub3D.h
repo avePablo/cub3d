@@ -71,5 +71,7 @@ void			draw_column(t_game *g, t_raycast *r, int x);
 void			get_line_height(t_game *g, t_raycast *r);
 void			put_pixel(mlx_image_t *img, int x, int y, uint32_t color);
 char			get_cell(t_game *g, int x, int y);
+int				init_map(int argc, char **argv, t_game *game);
+int				init_mlx(t_game *game);
 
 #endif

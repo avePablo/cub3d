@@ -6,12 +6,14 @@
 /*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 17:51:13 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/02 17:51:14 by kfuto            ###   ########.fr       */
+/*   Updated: 2026/05/02 19:09:12 by kfuto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
+/* Calcula la distancia perpendicular a la pared 
+y el rango vertical a dibujar */
 void	get_line_height(t_game *g, t_raycast *r)
 {
 	if (r->side == 0)
@@ -25,6 +27,7 @@ void	get_line_height(t_game *g, t_raycast *r)
 	r->draw_end = r->line_height / 2 + 300;
 }
 
+/* Escribe un pixel RGBA en el buffer de imagen en la posicion (x, y) */
 void	put_pixel(mlx_image_t *img, int x, int y, uint32_t color)
 {
 	uint8_t	*pixel;
@@ -38,6 +41,8 @@ void	put_pixel(mlx_image_t *img, int x, int y, uint32_t color)
 	pixel[3] = (color >> 0) & 0xFF;
 }
 
+/* Devuelve el caracter del mapa en (x, y), 
+tratando fuera de limites como pared */
 char	get_cell(t_game *g, int x, int y)
 {
 	if (!g->map[y])
@@ -49,6 +54,8 @@ char	get_cell(t_game *g, int x, int y)
 	return (g->map[y][x]);
 }
 
+/* Dibuja el techo, el fragmento de pared
+ y el suelo para una columna de pantalla */
 void	draw_column(t_game *g, t_raycast *r, int x)
 {
 	int	wall_color;
