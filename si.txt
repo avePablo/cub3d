@@ -1,0 +1,326 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/02 18:57:32 by kfuto             #+#    #+#             */
+/*   Updated: 2026/05/02 19:01:33 by kfuto            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+int	init_map(int argc, char **argv, t_game *game)
+{
+	char	**file;
+	char	**config;
+
+	if (argc != 2)
+		return (ft_putstr_fd("Error\n", 2), 1);
+	file = read_file(argv[1]);
+	if (!file)
+		return (ft_putstr_fd("Error\n", 2), 1);
+	split_file(file, &config, &game->map);
+	parse_config(config, game);
+	validate_player(game->map);
+	validate_map_closed(game->map);
+	init_player_from_map(game);
+	return (0);
+}
+
+int	init_mlx(t_game *game)
+{
+	game->mlx = mlx_init(800, 600, "Cub3D", true);
+	if (!game->mlx)
+		return (ft_putstr_fd("Error MLX\n", 2), 1);
+	game->img = mlx_new_image(game->mlx, 800, 600);
+	if (!game->img)
+		return (ft_putstr_fd("Error imagen\n", 2), 1);
+	if (mlx_image_to_window(game->mlx, game->img, 0, 0) < 0)
+		return (ft_putstr_fd("Error window\n", 2), 1);
+	return (0);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/02 18:55:04 by kfuto             #+#    #+#             */
+/*   Updated: 2026/05/02 18:57:47 by kfuto            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+static void	render(void *param)
+{
+	t_game	*g;
+
+	g = (t_game *)param;
+	raycast(g);
+}
+
+int	main(int argc, char **argv)
+{
+	t_game	game;
+
+	ft_memset(&game, 0, sizeof(t_game));
+	if (init_map(argc, argv, &game))
+		return (1);
+	if (init_mlx(&game))
+		return (1);
+	mlx_loop_hook(game.mlx, render, &game);
+	mlx_loop(game.mlx);
+	mlx_terminate(game.mlx);
+	return (0);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raycast.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/02 17:51:17 by kfuto             #+#    #+#             */
+/*   Updated: 2026/05/02 17:51:18 by kfuto            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+void	perform_dda(t_game *g, t_raycast *r)
+{
+	int	hit;
+
+	hit = 0;
+	while (!hit)
+	{
+		if (r->side_x < r->side_y)
+		{
+			r->side_x += r->delta_x;
+			r->map_x += r->step_x;
+			r->side = 0;
+		}
+		else
+		{
+			r->side_y += r->delta_y;
+			r->map_y += r->step_y;
+			r->side = 1;
+		}
+		if (get_cell(g, r->map_x, r->map_y) == '1')
+			hit = 1;
+		if (r->map_x < 0 || r->map_y < 0)
+			break ;
+		if (!g->map[r->map_y])
+			break ;
+	}
+}
+
+void	raycast(t_game *g)
+{
+	t_raycast	r;
+	int			x;
+
+	ft_memset(g->img->pixels, 0, g->img->width * g->img->height * 4);
+	x = 0;
+	while (x < 800)
+	{
+		init_ray(g, &r, x);
+		init_dda(g, &r);
+		perform_dda(g, &r);
+		get_line_height(g, &r);
+		draw_column(g, &r, x);
+		x++;
+	}
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raycast_helper.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/02 17:51:13 by kfuto             #+#    #+#             */
+/*   Updated: 2026/05/02 17:51:14 by kfuto            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+void	get_line_height(t_game *g, t_raycast *r)
+{
+	if (r->side == 0)
+		r->perp_wall_dist = (r->map_x - g->player.pos_x
+				+ (1 - r->step_x) / 2) / r->ray_dir_x;
+	else
+		r->perp_wall_dist = (r->map_y - g->player.pos_y
+				+ (1 - r->step_y) / 2) / r->ray_dir_y;
+	r->line_height = (int)(600 / r->perp_wall_dist);
+	r->draw_start = -r->line_height / 2 + 300;
+	r->draw_end = r->line_height / 2 + 300;
+}
+
+void	put_pixel(mlx_image_t *img, int x, int y, uint32_t color)
+{
+	uint8_t	*pixel;
+
+	if (x < 0 || y < 0 || x >= (int)img->width || y >= (int)img->height)
+		return ;
+	pixel = img->pixels + (y * img->width + x) * 4;
+	pixel[0] = (color >> 24) & 0xFF;
+	pixel[1] = (color >> 16) & 0xFF;
+	pixel[2] = (color >> 8) & 0xFF;
+	pixel[3] = (color >> 0) & 0xFF;
+}
+
+char	get_cell(t_game *g, int x, int y)
+{
+	if (!g->map[y])
+		return ('1');
+	if (x < 0 || y < 0)
+		return ('1');
+	if (x >= (int)ft_strlen(g->map[y]))
+		return ('1');
+	return (g->map[y][x]);
+}
+
+void	draw_column(t_game *g, t_raycast *r, int x)
+{
+	int	wall_color;
+	int	y;
+
+	if (r->side == 1)
+		wall_color = 0xAAAAAAFF;
+	else
+		wall_color = 0xFFFFFFFF;
+	y = 0;
+	while (y < r->draw_start)
+		put_pixel(g->img, x, y++, 0xDDDDDDFF);
+	y = r->draw_start;
+	if (y < 0)
+		y = 0;
+	while (y < r->draw_end && y < 600)
+		put_pixel(g->img, x, y++, wall_color);
+	while (y < 600)
+		put_pixel(g->img, x, y++, 0x000000EE);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raycast_init.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/02 17:50:56 by kfuto             #+#    #+#             */
+/*   Updated: 2026/05/02 18:56:00 by kfuto            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+void	init_ray(t_game *g, t_raycast *r, int x)
+{
+	r->camera_x = 2 * x / (double)800 - 1;
+	r->ray_dir_x = g->player.dir_x + g->player.plane_x * r->camera_x;
+	r->ray_dir_y = g->player.dir_y + g->player.plane_y * r->camera_x;
+	if (r->ray_dir_x == 0)
+		r->ray_dir_x = 0.000001;
+	if (r->ray_dir_y == 0)
+		r->ray_dir_y = 0.000001;
+}
+
+void	init_dda(t_game *g, t_raycast *r)
+{
+	r->map_x = (int)g->player.pos_x;
+	r->map_y = (int)g->player.pos_y;
+	r->delta_x = fabs(1 / r->ray_dir_x);
+	r->delta_y = fabs(1 / r->ray_dir_y);
+	if (r->ray_dir_x < 0)
+	{
+		r->step_x = -1;
+		r->side_x = (g->player.pos_x - r->map_x) * r->delta_x;
+	}
+	else
+	{
+		r->step_x = 1;
+		r->side_x = (r->map_x + 1.0 - g->player.pos_x) * r->delta_x;
+	}
+	if (r->ray_dir_y < 0)
+	{
+		r->step_y = -1;
+		r->side_y = (g->player.pos_y - r->map_y) * r->delta_y;
+	}
+	else
+	{
+		r->step_y = 1;
+		r->side_y = (r->map_y + 1.0 - g->player.pos_y) * r->delta_y;
+	}
+}
+
+static void	set_dir_ns(t_game *g, char dir)
+{
+	if (dir == 'N')
+	{
+		g->player.dir_x = 0;
+		g->player.dir_y = -1;
+		g->player.plane_x = 0.66;
+		g->player.plane_y = 0;
+	}
+	else
+	{
+		g->player.dir_x = 0;
+		g->player.dir_y = 1;
+		g->player.plane_x = -0.66;
+		g->player.plane_y = 0;
+	}
+}
+
+static void	set_player_direction(t_game *g, char dir)
+{
+	if (dir == 'N' || dir == 'S')
+		set_dir_ns(g, dir);
+	else if (dir == 'E')
+	{
+		g->player.dir_x = 1;
+		g->player.dir_y = 0;
+		g->player.plane_x = 0;
+		g->player.plane_y = 0.66;
+	}
+	else
+	{
+		g->player.dir_x = -1;
+		g->player.dir_y = 0;
+		g->player.plane_x = 0;
+		g->player.plane_y = -0.66;
+	}
+}
+
+void	init_player_from_map(t_game *g)
+{
+	int	y;
+	int	x;
+
+	y = 0;
+	while (g->map[y])
+	{
+		x = 0;
+		while (g->map[y][x])
+		{
+			if (g->map[y][x] == 'N' || g->map[y][x] == 'S'
+				|| g->map[y][x] == 'E' || g->map[y][x] == 'W')
+			{
+				g->player.pos_x = x + 0.5;
+				g->player.pos_y = y + 0.5;
+				set_player_direction(g, g->map[y][x]);
+				g->map[y][x] = '0';
+				return ;
+			}
+			x++;
+		}
+		y++;
+	}
+}
