@@ -6,7 +6,7 @@
 /*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 19:00:14 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/06 10:07:19 by idiaz-ca         ###   ########.fr       */
+/*   Updated: 2026/05/07 17:19:25 by idiaz-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,18 +54,31 @@ static void	parse_color(char *line, int rgb[3])
 	i = 0;
 	while (*line && (*line < '0' || *line > '9'))
 		line++; // saltar 'F ' o 'C '
-	for (i = 0; i < 3; i++)
+	while (i < 3)
 	{
-		rgb[i] = atoi(line);
-		if (rgb[i] < 0 || rgb[i] > 255)
+		if (!ft_isdigit(*line))
 		{
-			printf("Error: invalid color\n");
+			ft_putstr_fd("Error: Invalid color\n", 2);
 			exit(1);
 		}
-		while (*line >= '0' && *line <= '9')
+		rgb[i] = ft_atoi(line);
+		if (rgb[i] < 0 || rgb[i] > 255)
+		{
+			ft_putstr_fd("Error: Color out of range\n", 2);
+			exit(1);
+		}
+		while (ft_isdigit(*line))
 			line++;
-		if (*line == ',')
+		if (i < 2)
+		{
+			if (*line != ',')
+			{
+				ft_putstr_fd("Error: Invalid color format\n", 2);
+				exit(1);
+			}
 			line++;
+		}
+		i++;
 	}
 }
 
@@ -152,4 +165,3 @@ void	parse_config(char **config, t_game *game)
 	if (!game->c[0] && !game->c[1] && !game->c[2])
 		return (printf("Error: missing ceiling color\n"), exit(1));
 }
-

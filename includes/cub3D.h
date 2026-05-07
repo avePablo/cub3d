@@ -64,6 +64,7 @@ typedef struct s_game
 }		t_game;
 
 char	**read_file(char *filename);
+int     check_extension(char *filename);
 void	split_file(char **file, char ***config, char ***map);
 void	parse_config(char **config, t_game *game);
 void	raycast(t_game *g);
@@ -71,6 +72,7 @@ void	validate_player(char **map);
 		// Valida que haya exactamente un jugador en el mapa
 void	validate_map_closed(char **map);
 		// Valida que el mapa esté cerrado (no haya espacios vacíos alrededor de los pasillos)
+void    validate_textures(t_game *game); // Valida que las rutas de las texturas sean correctas
 int		is_config_line(char *line);
 int		is_map_line(char *line);
 int		is_empty_line(char *line);

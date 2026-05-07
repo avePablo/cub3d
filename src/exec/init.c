@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 18:57:32 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/07 16:13:11 by kfuto            ###   ########.fr       */
+/*   Updated: 2026/05/07 17:20:29 by idiaz-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,17 @@ int	init_map(int argc, char **argv, t_game *game)
 
 	if (argc != 2)
 		return (ft_putstr_fd("Error\n", 2), 1);
+	if (!check_extension(argv[1]))
+	{
+		ft_putstr_fd("Error: Invalid file extension\n", 2);
+		return (1);
+	}
 	file = read_file(argv[1]);
 	if (!file)
 		return (ft_putstr_fd("Error\n", 2), 1);
 	split_file(file, &config, &game->map);
 	parse_config(config, game);
+	validate_textures(game);
 	validate_player(game->map);
 	validate_map_closed(game->map);
 	init_player_from_map(game);
