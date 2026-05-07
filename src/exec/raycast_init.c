@@ -6,7 +6,7 @@
 /*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 17:50:56 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/02 19:10:03 by kfuto            ###   ########.fr       */
+/*   Updated: 2026/05/07 16:13:38 by kfuto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /* Calcula la direccion del rayo para la columna x usando el plano de camara */
 void	init_ray(t_game *g, t_raycast *r, int x)
 {
-	r->camera_x = 2 * x / (double)800 - 1;
+	r->camera_x = 2 * x / (double)WINDOW_WIDTH - 1;
 	r->ray_dir_x = g->player.dir_x + g->player.plane_x * r->camera_x;
 	r->ray_dir_y = g->player.dir_y + g->player.plane_y * r->camera_x;
 	if (r->ray_dir_x == 0)

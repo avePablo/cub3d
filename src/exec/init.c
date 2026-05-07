@@ -6,7 +6,7 @@
 /*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 18:57:32 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/02 19:08:07 by kfuto            ###   ########.fr       */
+/*   Updated: 2026/05/07 16:13:11 by kfuto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,10 @@ int	init_map(int argc, char **argv, t_game *game)
    y lo asocia a la ventana */
 int	init_mlx(t_game *game)
 {
-	game->mlx = mlx_init(800, 600, "Cub3D", true);
+	game->mlx = mlx_init(WINDOW_WIDTH, WINDOW_HEIGHT, "Cub3D", true);
 	if (!game->mlx)
 		return (ft_putstr_fd("Error MLX\n", 2), 1);
-	game->img = mlx_new_image(game->mlx, 800, 600);
+	game->img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
 	if (!game->img)
 		return (ft_putstr_fd("Error imagen\n", 2), 1);
 	if (mlx_image_to_window(game->mlx, game->img, 0, 0) < 0)

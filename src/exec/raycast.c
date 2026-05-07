@@ -6,7 +6,7 @@
 /*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 17:51:17 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/02 19:10:26 by kfuto            ###   ########.fr       */
+/*   Updated: 2026/05/07 16:13:28 by kfuto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	raycast(t_game *g)
 
 	ft_memset(g->img->pixels, 0, g->img->width * g->img->height * 4);
 	x = 0;
-	while (x < 800)
+	while (x < WINDOW_WIDTH)
 	{
 		init_ray(g, &r, x);
 		init_dda(g, &r);
