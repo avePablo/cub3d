@@ -32,8 +32,8 @@ MLX42_LDFLAGS = -lglfw -ldl -lm -lpthread
 #                                 SOURCES                                      #
 # **************************************************************************** #
 
-SRC = $(SRC_DIR)/exec/init.c \
-	  $(SRC_DIR)/exec/main.c \
+SRC = $(SRC_DIR)/main.c \
+	  $(SRC_DIR)/exec/init.c \
       $(SRC_DIR)/parser/parser.c \
       $(SRC_DIR)/parser/split_file.c \
 	  $(SRC_DIR)/parser/parser_setter.c \
