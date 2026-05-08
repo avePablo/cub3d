@@ -8,6 +8,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <stdint.h> //para uint32_t(unisgned int de 32 bits)
 
 # define WINDOW_WIDTH 1920
 # define WINDOW_HEIGHT 1080
@@ -56,6 +57,8 @@ typedef struct s_game
 	char *ea;         // Ruta de la textura este
 	int f[3];         // Color del piso (RGB)
 	int c[3];         // Color del techo (RGB)
+	uint32_t floor_color;   // Color del piso en formato RGBA
+	uint32_t ceiling_color; // Color del techo en formato RGBA
 	int map_width;    // Ancho del mapa
 	int map_height;   // Alto del mapa
 	mlx_t *mlx;       // Contexto de MLX
@@ -85,6 +88,7 @@ void	perform_dda(t_game *g, t_raycast *r);
 void	draw_column(t_game *g, t_raycast *r, int x);
 void	get_line_height(t_game *g, t_raycast *r);
 void	put_pixel(mlx_image_t *img, int x, int y, uint32_t color);
+uint32_t	rgb_to_hex(int r, int g, int b);
 char	get_cell(t_game *g, int x, int y);
 int		init_map(int argc, char **argv, t_game *game); // Lee el mapa, lo valida y lo guarda en la estructura del juego
 int		init_mlx(t_game *game);
