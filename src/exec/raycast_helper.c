@@ -6,7 +6,7 @@
 /*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 17:51:13 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/07 16:19:27 by kfuto            ###   ########.fr       */
+/*   Updated: 2026/05/08 02:11:43 by kfuto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	get_line_height(t_game *g, t_raycast *r)
 				+ (1 - r->step_y) / 2) / r->ray_dir_y;
 	r->line_height = (int)(WINDOW_HEIGHT / r->perp_wall_dist);
 	r->draw_start = -r->line_height / 2 + WINDOW_HEIGHT / 2;
-	r->draw_end   =  r->line_height / 2 + WINDOW_HEIGHT / 2;
+	r->draw_end = r->line_height / 2 + WINDOW_HEIGHT / 2;
 }
 
 /* Escribe un pixel RGBA en el buffer de imagen en la posicion (x, y) */
@@ -72,7 +72,7 @@ void	draw_column(t_game *g, t_raycast *r, int x)
 	if (y < 0)
 		y = 0;
 	while (y < r->draw_end && y < WINDOW_HEIGHT)
-    	put_pixel(g->img, x, y++, wall_color);
+		put_pixel(g->img, x, y++, wall_color);
 	while (y < WINDOW_HEIGHT)
-    	put_pixel(g->img, x, y++, 0x000000EE);
+		put_pixel(g->img, x, y++, 0x000000EE);
 }

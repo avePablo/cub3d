@@ -42,6 +42,7 @@ SRC = $(SRC_DIR)/exec/init.c \
 	  $(SRC_DIR)/exec/raycast.c \
 	  $(SRC_DIR)/exec/raycast_init.c \
 	  $(SRC_DIR)/exec/raycast_helper.c \
+	  $(SRC_DIR)/exec/moves.c \
 
 
 OBJ = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))

@@ -6,7 +6,7 @@
 /*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 18:55:04 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/02 19:08:25 by kfuto            ###   ########.fr       */
+/*   Updated: 2026/05/08 01:55:03 by kfuto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ static void	render(void *param)
 	t_game	*g;
 
 	g = (t_game *)param;
+	handle_input(g);
 	raycast(g);
 }
 

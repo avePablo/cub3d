@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 18:57:32 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/07 16:13:11 by kfuto            ###   ########.fr       */
+/*   Updated: 2026/05/07 17:20:29 by idiaz-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,17 @@ int	init_map(int argc, char **argv, t_game *game)
 
 	if (argc != 2)
 		return (ft_putstr_fd("Error\n", 2), 1);
+	if (!check_extension(argv[1]))
+	{
+		ft_putstr_fd("Error: Invalid file extension\n", 2);
+		return (1);
+	}
 	file = read_file(argv[1]);
 	if (!file)
 		return (ft_putstr_fd("Error\n", 2), 1);
 	split_file(file, &config, &game->map);
 	parse_config(config, game);
+	validate_textures(game);
 	validate_player(game->map);
 	validate_map_closed(game->map);
 	init_player_from_map(game);
@@ -85,6 +91,20 @@ int	main(int argc, char **argv)
 	mlx_terminate(game.mlx);
 	return (0);
 }
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   moves.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/08 01:52:56 by kfuto             #+#    #+#             */
+/*   Updated: 2026/05/08 01:53:01 by kfuto            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -156,7 +176,7 @@ void	raycast(t_game *g)
 /*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 17:51:13 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/07 16:14:01 by kfuto            ###   ########.fr       */
+/*   Updated: 2026/05/07 16:19:27 by kfuto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,10 +241,10 @@ void	draw_column(t_game *g, t_raycast *r, int x)
 	y = r->draw_start;
 	if (y < 0)
 		y = 0;
-	while (y < r->draw_end && y < 600)
-		put_pixel(g->img, x, y++, wall_color);
-	while (y < 600)
-		put_pixel(g->img, x, y++, 0x000000EE);
+	while (y < r->draw_end && y < WINDOW_HEIGHT)
+    	put_pixel(g->img, x, y++, wall_color);
+	while (y < WINDOW_HEIGHT)
+    	put_pixel(g->img, x, y++, 0x000000EE);
 }
 /* ************************************************************************** */
 /*                                                                            */
@@ -567,7 +587,7 @@ int	is_valid_cell(char **map, int y, int x)
 /*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 19:00:14 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/06 10:07:19 by idiaz-ca         ###   ########.fr       */
+/*   Updated: 2026/05/07 17:19:25 by idiaz-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -615,18 +635,31 @@ static void	parse_color(char *line, int rgb[3])
 	i = 0;
 	while (*line && (*line < '0' || *line > '9'))
 		line++; // saltar 'F ' o 'C '
-	for (i = 0; i < 3; i++)
+	while (i < 3)
 	{
-		rgb[i] = atoi(line);
-		if (rgb[i] < 0 || rgb[i] > 255)
+		if (!ft_isdigit(*line))
 		{
-			printf("Error: invalid color\n");
+			ft_putstr_fd("Error: Invalid color\n", 2);
 			exit(1);
 		}
-		while (*line >= '0' && *line <= '9')
+		rgb[i] = ft_atoi(line);
+		if (rgb[i] < 0 || rgb[i] > 255)
+		{
+			ft_putstr_fd("Error: Color out of range\n", 2);
+			exit(1);
+		}
+		while (ft_isdigit(*line))
 			line++;
-		if (*line == ',')
+		if (i < 2)
+		{
+			if (*line != ',')
+			{
+				ft_putstr_fd("Error: Invalid color format\n", 2);
+				exit(1);
+			}
 			line++;
+		}
+		i++;
 	}
 }
 
@@ -713,7 +746,6 @@ void	parse_config(char **config, t_game *game)
 	if (!game->c[0] && !game->c[1] && !game->c[2])
 		return (printf("Error: missing ceiling color\n"), exit(1));
 }
-
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -776,7 +808,40 @@ void	split_file(char **file, char ***config, char ***map)
 	}
 	(*map)[m] = NULL;
 }
-#ifndef CUB3D_H
+#include "cub3D.h"
+
+int	check_extension(char *filename)
+{
+	int	len;
+
+	len = ft_strlen(filename);
+	if (len < 5)
+		return (0);
+	if (ft_strncmp(filename + len - 4, ".cub", 4) != 0)
+		return (0);
+	return (1);
+}
+
+static void	check_texture(char *path)
+{
+	int	fd;
+
+	fd = open(path, O_RDONLY);
+	if (fd < 0)
+	{
+		ft_putstr_fd("Error: Invalid texture path\n", 2);
+		exit(1);
+	}
+	close(fd);
+}
+
+void	validate_textures(t_game *game)
+{
+	check_texture(game->no);
+	check_texture(game->so);
+	check_texture(game->we);
+	check_texture(game->ea);
+}#ifndef CUB3D_H
 # define CUB3D_H
 
 # include "../MLX42/include/MLX42/MLX42.h"
@@ -787,8 +852,8 @@ void	split_file(char **file, char ***config, char ***map)
 # include <stdlib.h>
 # include <unistd.h>
 
-# define WINDOW_HEIGHT 1000
 # define WINDOW_WIDTH 500
+# define WINDOW_HEIGHT 700
 
 // ESTRUCTURA PARA RAYCASTING
 typedef struct s_raycast
@@ -842,6 +907,7 @@ typedef struct s_game
 }		t_game;
 
 char	**read_file(char *filename);
+int     check_extension(char *filename);
 void	split_file(char **file, char ***config, char ***map);
 void	parse_config(char **config, t_game *game);
 void	raycast(t_game *g);
@@ -849,6 +915,7 @@ void	validate_player(char **map);
 		// Valida que haya exactamente un jugador en el mapa
 void	validate_map_closed(char **map);
 		// Valida que el mapa esté cerrado (no haya espacios vacíos alrededor de los pasillos)
+void    validate_textures(t_game *game); // Valida que las rutas de las texturas sean correctas
 int		is_config_line(char *line);
 int		is_map_line(char *line);
 int		is_empty_line(char *line);

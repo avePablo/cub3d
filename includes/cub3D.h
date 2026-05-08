@@ -9,8 +9,8 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-# define WINDOW_WIDTH 500
-# define WINDOW_HEIGHT 700
+# define WINDOW_WIDTH 1920
+# define WINDOW_HEIGHT 1080
 
 // ESTRUCTURA PARA RAYCASTING
 typedef struct s_raycast
@@ -88,5 +88,6 @@ void	put_pixel(mlx_image_t *img, int x, int y, uint32_t color);
 char	get_cell(t_game *g, int x, int y);
 int		init_map(int argc, char **argv, t_game *game); // Lee el mapa, lo valida y lo guarda en la estructura del juego
 int		init_mlx(t_game *game);
+void	handle_input(t_game *g);
 
 #endif
