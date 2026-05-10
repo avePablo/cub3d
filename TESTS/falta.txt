@@ -1,0 +1,3 @@
+Arreglar errores del test_map
+Hacer que cierre el juego con la tecla ESC
+Revisar leaks

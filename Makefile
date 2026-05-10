@@ -20,9 +20,12 @@ MLX42_LIB   = $(MLX42_BUILD)/libmlx42.a
 MLX42_INC   = -I$(MLX42_DIR)/include
 MLX42_DEPS  = $(MLX42_LIB)
 
+# Sanitizers
+#SANITIZE = -fsanitize=address -g
+
 # Compilación
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror
+CFLAGS      = -Wall -Wextra -Werror #$(SANITIZE)
 INCLUDES    = -I$(INCLUDE_DIR) -I$(LIBFT_DIR)
 
 # Librerías adicionales necesarias en Linux
