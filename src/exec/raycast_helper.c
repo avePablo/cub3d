@@ -6,7 +6,7 @@
 /*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 17:51:13 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/08 12:55:45 by idiaz-ca         ###   ########.fr       */
+/*   Updated: 2026/05/10 14:54:09 by idiaz-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,20 +27,6 @@ void	get_line_height(t_game *g, t_raycast *r)
 	r->draw_end = r->line_height / 2 + WINDOW_HEIGHT / 2;
 }
 
-/* Escribe un pixel RGBA en el buffer de imagen en la posicion (x, y) */
-void	put_pixel(mlx_image_t *img, int x, int y, uint32_t color)
-{
-	uint8_t	*pixel;
-
-	if (x < 0 || y < 0 || x >= (int)img->width || y >= (int)img->height)
-		return ;
-	pixel = img->pixels + (y * img->width + x) * 4;
-	pixel[0] = (color >> 24) & 0xFF;
-	pixel[1] = (color >> 16) & 0xFF;
-	pixel[2] = (color >> 8) & 0xFF;
-	pixel[3] = (color >> 0) & 0xFF;
-}
-
 /* Devuelve el caracter del mapa en (x, y),
 tratando fuera de limites como pared */
 char	get_cell(t_game *g, int x, int y)
@@ -52,27 +38,4 @@ char	get_cell(t_game *g, int x, int y)
 	if (x >= (int)ft_strlen(g->map[y]))
 		return ('1');
 	return (g->map[y][x]);
-}
-
-/* Dibuja el techo, el fragmento de pared
- y el suelo para una columna de pantalla */
-void	draw_column(t_game *g, t_raycast *r, int x)
-{
-	int	wall_color;
-	int	y;
-
-	if (r->side == 1)
-		wall_color = 0xAAAAAAFF;
-	else
-		wall_color = 0xFFFFFFFF;
-	y = 0;
-	while (y < r->draw_start)
-		put_pixel(g->img, x, y++, g->ceiling_color);
-	y = r->draw_start;
-	if (y < 0)
-		y = 0;
-	while (y < r->draw_end && y < WINDOW_HEIGHT)
-		put_pixel(g->img, x, y++, wall_color);
-	while (y < WINDOW_HEIGHT)
-		put_pixel(g->img, x, y++, g->floor_color);
 }

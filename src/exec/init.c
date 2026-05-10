@@ -6,7 +6,7 @@
 /*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 18:57:32 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/07 17:20:29 by idiaz-ca         ###   ########.fr       */
+/*   Updated: 2026/05/10 13:49:35 by idiaz-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int	init_map(int argc, char **argv, t_game *game)
 		return (ft_putstr_fd("Error\n", 2), 1);
 	split_file(file, &config, &game->map);
 	parse_config(config, game);
+	load_textures(game);
 	validate_textures(game);
 	validate_player(game->map);
 	validate_map_closed(game->map);

@@ -55,6 +55,10 @@ typedef struct s_game
 	char *so;         // Ruta de la textura sur
 	char *we;         // Ruta de la textura oeste
 	char *ea;         // Ruta de la textura este
+	mlx_texture_t *tex_no; // Textura norte cargada
+	mlx_texture_t *tex_so; // Textura sur cargada
+	mlx_texture_t *tex_we; // Textura oeste cargada
+	mlx_texture_t *tex_ea; // Textura este cargada
 	int f[3];         // Color del piso (RGB)
 	int c[3];         // Color del techo (RGB)
 	uint32_t floor_color;   // Color del piso en formato RGBA
@@ -76,6 +80,8 @@ void	validate_player(char **map);
 void	validate_map_closed(char **map);
 		// Valida que el mapa esté cerrado (no haya espacios vacíos alrededor de los pasillos)
 void    validate_textures(t_game *game); // Valida que las rutas de las texturas sean correctas
+void	load_textures(t_game *game); // Carga las texturas usando MLX
+uint32_t	get_texture_pixel(mlx_texture_t *tex, int x, int y);
 int		is_config_line(char *line);
 int		is_map_line(char *line);
 int		is_empty_line(char *line);
