@@ -42,6 +42,7 @@ SRC = $(SRC_DIR)/main.c \
 	  $(SRC_DIR)/parser/parser_setter.c \
 	  $(SRC_DIR)/parser/parser_helper.c \
 	  $(SRC_DIR)/parser/validate.c \
+	  $(SRC_DIR)/parser/rectangular.c \
 	  $(SRC_DIR)/exec/raycast.c \
 	  $(SRC_DIR)/exec/raycast_init.c \
 	  $(SRC_DIR)/exec/raycast_helper.c \

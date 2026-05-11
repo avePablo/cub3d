@@ -80,6 +80,8 @@ void	validate_player(char **map);
 void	validate_map_closed(char **map);
 		// Valida que el mapa esté cerrado (no haya espacios vacíos alrededor de los pasillos)
 void    validate_textures(t_game *game); // Valida que las rutas de las texturas sean correctas
+char	**make_map_rectangular(char **map);
+		// Convierte el mapa a un formato rectangular rellenando con espacios las líneas más cortas
 void	load_textures(t_game *game); // Carga las texturas usando MLX
 uint32_t	get_texture_pixel(mlx_texture_t *tex, int x, int y);
 int		is_config_line(char *line);

@@ -6,7 +6,7 @@
 /*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 19:00:06 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/10 19:13:59 by idiaz-ca         ###   ########.fr       */
+/*   Updated: 2026/05/11 10:39:45 by idiaz-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,15 +70,16 @@ int	is_config_line(char *line)
 			2) == 0 || ft_strncmp(&line[i], "C ", 2) == 0);
 }
 
-/*Función auxiliar para validar que una celda del mapa es válida
-(dentro de los límites y no es un espacio)*/
+/*Función auxiliar para validar que una celda del mapa es válida*/
 int	is_valid_cell(char **map, int y, int x)
 {
 	if (y < 0 || x < 0)
 		return (0);
-	if (!map[y] || x >= (int)ft_strlen(map[y]))
+	if (!map[y])
 		return (0);
-	if (map[y][x] == ' ')
+	if (x >= (int)ft_strlen(map[y]))
+		return (0);
+	if (map[y][x] == '\n' || map[y][x] == '\0')
 		return (0);
 	return (1);
 }
