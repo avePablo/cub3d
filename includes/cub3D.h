@@ -75,6 +75,7 @@ int     check_extension(char *filename);
 void	split_file(char **file, char ***config, char ***map);
 void	parse_config(char **config, t_game *game);
 void	raycast(t_game *g);
+void 	validate_map(t_game *game);
 void	validate_player(char **map);    
 		// Valida que haya exactamente un jugador en el mapa
 void	validate_map_closed(char **map);

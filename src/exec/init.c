@@ -37,6 +37,7 @@ int	init_map(int argc, char **argv, t_game *game)
 	validate_player(game->map);
 	validate_map_closed(game->map);
 	init_player_from_map(game);
+	validate_map(game);
 	return (0);
 }
 

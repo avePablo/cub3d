@@ -6,7 +6,7 @@
 /*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 19:00:14 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/08 12:46:34 by idiaz-ca         ###   ########.fr       */
+/*   Updated: 2026/05/12 17:49:48 by idiaz-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,13 @@ static void	parse_color(char *line, int rgb[3])
 			line++;
 		}
 		i++;
+	}
+	while (*line == ' ' || *line == '\n')
+		line++;
+	if (*line != '\0')
+	{
+		ft_putstr_fd("Error: Extra characters after color values\n", 2);
+		exit(1);
 	}
 }
 

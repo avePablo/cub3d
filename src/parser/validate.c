@@ -37,10 +37,37 @@ static void	check_texture(char *path)
 	close(fd);
 }
 
+static void validate_map_borders(char **map)
+{
+    int i, j;
+
+    for (i = 0; map[i]; i++)
+    {
+        for (j = 0; map[i][j]; j++)
+        {
+            if (map[i][j] == '0')
+            {
+                if (i == 0 || j == 0 || !map[i + 1] || !map[i][j + 1] ||
+                    map[i - 1][j] == ' ' || map[i + 1][j] == ' ' ||
+                    map[i][j - 1] == ' ' || map[i][j + 1] == ' ')
+                {
+                    ft_putstr_fd("Error: Map is not enclosed by walls\n", 2);
+                    exit(1);
+                }
+            }
+        }
+    }
+}
+
 void	validate_textures(t_game *game)
 {
 	check_texture(game->no);
 	check_texture(game->so);
 	check_texture(game->we);
 	check_texture(game->ea);
+}
+
+void validate_map(t_game *game)
+{
+    validate_map_borders(game->map);
 }
