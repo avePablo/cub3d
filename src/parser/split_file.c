@@ -6,14 +6,14 @@
 /*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 12:24:12 by idiaz-ca          #+#    #+#             */
-/*   Updated: 2026/05/10 19:11:20 by idiaz-ca         ###   ########.fr       */
+/*   Updated: 2026/05/13 17:22:46 by idiaz-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
 /* Devuelve el índice donde empieza el mapa en el array `file` */
-static int	find_map_start(char **file)
+int	find_map_start(char **file)
 {
 	int	i;
 

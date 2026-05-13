@@ -6,7 +6,7 @@
 /*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 19:11:45 by idiaz-ca          #+#    #+#             */
-/*   Updated: 2026/05/10 19:12:19 by idiaz-ca         ###   ########.fr       */
+/*   Updated: 2026/05/13 17:45:19 by idiaz-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,26 +37,31 @@ static void	check_texture(char *path)
 	close(fd);
 }
 
-static void validate_map_borders(char **map)
+static void	validate_map_borders(char **map)
 {
-    int i, j;
+	int	i;
+	int	j;
 
-    for (i = 0; map[i]; i++)
-    {
-        for (j = 0; map[i][j]; j++)
-        {
-            if (map[i][j] == '0')
-            {
-                if (i == 0 || j == 0 || !map[i + 1] || !map[i][j + 1] ||
-                    map[i - 1][j] == ' ' || map[i + 1][j] == ' ' ||
-                    map[i][j - 1] == ' ' || map[i][j + 1] == ' ')
-                {
-                    ft_putstr_fd("Error: Map is not enclosed by walls\n", 2);
-                    exit(1);
-                }
-            }
-        }
-    }
+	i = 0;
+	while (map[i])
+	{
+		j = 0;
+		while (map[i][j])
+		{
+			if (map[i][j] == '0')
+			{
+				if (i == 0 || j == 0 || !map[i + 1] || !map[i][j + 1] || map[i
+					- 1][j] == ' ' || map[i + 1][j] == ' ' || map[i][j
+					- 1] == ' ' || map[i][j + 1] == ' ')
+				{
+					ft_putstr_fd("Error: Map is not enclosed by walls\n", 2);
+					exit(1);
+				}
+			}
+			j++;
+		}
+		i++;
+	}
 }
 
 void	validate_textures(t_game *game)
@@ -67,7 +72,7 @@ void	validate_textures(t_game *game)
 	check_texture(game->ea);
 }
 
-void validate_map(t_game *game)
+void	validate_map(t_game *game)
 {
-    validate_map_borders(game->map);
+	validate_map_borders(game->map);
 }
