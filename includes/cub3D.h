@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cub3D.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/13 19:42:01 by idiaz-ca          #+#    #+#             */
+/*   Updated: 2026/05/13 19:48:25 by idiaz-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CUB3D_H
 # define CUB3D_H
 
@@ -14,17 +26,17 @@
 # define WINDOW_HEIGHT 1080
 
 // ESTRUCTURA PARA RAYCASTING
-typedef struct s_raycast
+/*typedef struct s_raycast
 {
 	double camera_x;  // Coordenada X en el espacio de la cámara
 	double ray_dir_x; // Dirección X del rayo
 	double ray_dir_y; // Dirección Y del rayo
 	int map_x;        // Coordenada X del mapa (celda actual)
 	int map_y;        // Coordenada Y del mapa (celda actual)
-	double	delta_x;
-	// Distancia que el rayo tiene que recorrer para pasar de una línea vertical a la siguiente
-	double	delta_y;
-	// Distancia que el rayo tiene que recorrer para pasar de una línea horizontal a la siguiente
+	double	delta_x; // Distancia que el rayo tiene que recorrer para
+						pasar de una línea vertical a la siguiente
+	double	delta_y; // Distancia que el rayo tiene que recorrer para
+						pasar de una línea horizontal a la siguiente
 	double side_x;         // Distancia al siguiente paso en dirección X
 	double side_y;         // Distancia al siguiente paso en dirección Y
 	int step_x;            // Paso en dirección X
@@ -34,10 +46,29 @@ typedef struct s_raycast
 	int line_height;       // Altura de la línea a dibujar
 	int draw_start;        // Punto de inicio para dibujar
 	int draw_end;          // Punto de final para dibujar
-}			t_raycast;
+}			t_raycast;*/
+typedef struct s_raycast
+{
+	double			camera_x;
+	double			ray_dir_x;
+	double			ray_dir_y;
+	int				map_x;
+	int				map_y;
+	double			delta_x;
+	double			delta_y;
+	double			side_x;
+	double			side_y;
+	int				step_x;
+	int				step_y;
+	int				side;
+	double			perp_wall_dist;
+	int				line_height;
+	int				draw_start;
+	int				draw_end;
+}					t_raycast;
 
 // ESTRUCTURA PRINCIPAL DEL JUGADOR
-typedef struct s_player
+/*typedef struct s_player
 {
 	double pos_x;   // Posición X del jugador
 	double pos_y;   // Posición Y del jugador
@@ -45,10 +76,19 @@ typedef struct s_player
 	double dir_y;   // Dirección Y del jugador
 	double plane_x; // Plano de la cámara X (perpendicular a la dirección)
 	double plane_y; // Plano de la cámara Y (perpendicular a la dirección)
-}			t_player;
+}			t_player;*/
+typedef struct s_player
+{
+	double			pos_x;
+	double			pos_y;
+	double			dir_x;
+	double			dir_y;
+	double			plane_x;
+	double			plane_y;
+}					t_player;
 
 // ESTRUCTURA PRINCIPAL DEL JUEGO
-typedef struct s_game
+/*typedef struct s_game
 {
 	char **map;             // Mapa del juego
 	char *no;               // Ruta de la textura norte
@@ -67,44 +107,59 @@ typedef struct s_game
 	int map_height;         // Alto del mapa
 	mlx_t *mlx;             // Contexto de MLX
 	mlx_image_t *img;       // Imagen para renderizar el juego
-	t_player player;        // Información del jugador (posición, dirección,
-		plano)
-}			t_game;
+	t_player player;        // Información del jugador (posición,
+							dirección,plano)
+}			t_game;*/
+typedef struct s_game
+{
+	char			**map;
+	char			*no;
+	char			*so;
+	char			*we;
+	char			*ea;
+	mlx_texture_t	*tex_no;
+	mlx_texture_t	*tex_so;
+	mlx_texture_t	*tex_we;
+	mlx_texture_t	*tex_ea;
+	int				f[3];
+	int				c[3];
+	uint32_t		floor_color;
+	uint32_t		ceiling_color;
+	int				map_width;
+	int				map_height;
+	mlx_t			*mlx;
+	mlx_image_t		*img;
+	t_player		player;
+}					t_game;
 
-char		**read_file(char *filename);
-int			check_extension(char *filename);
-void		split_file(char **file, char ***config, char ***map);
-int			find_map_start(char **file);
-void		parse_config(char **config, t_game *game);
-void		raycast(t_game *g);
-void		validate_map(t_game *game);
-void		validate_player(char **map);
-// Valida que haya exactamente un jugador en el mapa
-void		validate_map_closed(char **map);
-// Valida que el mapa esté cerrado (no haya espacios vacíos alrededor de los pasillos)
-void	validate_textures(t_game *game);
-		// Valida que las rutas de las texturas sean correctas
-char		**make_map_rectangular(char **map);
-// Convierte el mapa a un formato rectangular rellenando con espacios las líneas más cortas
-void	load_textures(t_game *game); // Carga las texturas usando MLX
-uint32_t	get_texture_pixel(mlx_texture_t *tex, int x, int y);
-int			is_config_line(char *line);
-int			is_map_line(char *line);
-int			is_empty_line(char *line);
-int			is_valid_cell(char **map, int y, int x);
-void		init_player_from_map(t_game *g);
-// Inicializa la posición y dirección del jugador a partir del mapa
-void		init_ray(t_game *g, t_raycast *r, int x);
-void		init_dda(t_game *g, t_raycast *r);
-void		perform_dda(t_game *g, t_raycast *r);
-void		draw_column(t_game *g, t_raycast *r, int x);
-void		get_line_height(t_game *g, t_raycast *r);
-void		put_pixel(mlx_image_t *img, int x, int y, uint32_t color);
-uint32_t	rgb_to_hex(int r, int g, int b);
-char		get_cell(t_game *g, int x, int y);
-int	init_map(int argc, char **argv, t_game *game); // Lee el mapa,
-		lo valida y lo guarda en la estructura del juego
-int			init_mlx(t_game *game);
-void		handle_input(t_game *g);
+char				**read_file(char *filename);
+int					check_extension(char *filename);
+void				split_file(char **file, char ***config, char ***map);
+int					find_map_start(char **file);
+void				parse_config(char **config, t_game *game);
+void				raycast(t_game *g);
+void				validate_map(t_game *game);
+void				validate_player(char **map);
+void				validate_map_closed(char **map);
+void				validate_textures(t_game *game);
+char				**make_map_rectangular(char **map);
+void				load_textures(t_game *game);
+uint32_t			get_texture_pixel(mlx_texture_t *tex, int x, int y);
+int					is_config_line(char *line);
+int					is_map_line(char *line);
+int					is_empty_line(char *line);
+int					is_valid_cell(char **map, int y, int x);
+void				init_player_from_map(t_game *g);
+void				init_ray(t_game *g, t_raycast *r, int x);
+void				init_dda(t_game *g, t_raycast *r);
+void				perform_dda(t_game *g, t_raycast *r);
+void				draw_column(t_game *g, t_raycast *r, int x);
+void				get_line_height(t_game *g, t_raycast *r);
+void				put_pixel(mlx_image_t *img, int x, int y, uint32_t color);
+uint32_t			rgb_to_hex(int r, int g, int b);
+char				get_cell(t_game *g, int x, int y);
+int					init_map(int argc, char **argv, t_game *game);
+int					init_mlx(t_game *game);
+void				handle_input(t_game *g);
 
 #endif
