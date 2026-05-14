@@ -29,7 +29,7 @@ CFLAGS      = -Wall -Wextra -Werror #$(SANITIZE)
 INCLUDES    = -I$(INCLUDE_DIR) -I$(LIBFT_DIR)
 
 # Librerías adicionales necesarias en Linux
-MLX42_LDFLAGS = -lglfw -ldl -lm -lpthread
+MLX42_LDFLAGS = -lglfw -ldl -lm -lpthread 
 
 # **************************************************************************** #
 #                                 SOURCES                                      #
@@ -39,7 +39,9 @@ SRC = $(SRC_DIR)/main.c \
 	  $(SRC_DIR)/exec/init.c \
       $(SRC_DIR)/parser/parser.c \
       $(SRC_DIR)/parser/split_file.c \
-	  $(SRC_DIR)/parser/parser_setter.c \
+	  $(SRC_DIR)/parser/parser_config.c \
+	  $(SRC_DIR)/parser/parser_color.c \
+	  $(SRC_DIR)/parser/parser_texture.c \
 	  $(SRC_DIR)/parser/parser_helper.c \
 	  $(SRC_DIR)/parser/validate.c \
 	  $(SRC_DIR)/parser/rectangular.c \

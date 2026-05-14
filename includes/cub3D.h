@@ -6,7 +6,7 @@
 /*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:42:01 by idiaz-ca          #+#    #+#             */
-/*   Updated: 2026/05/13 19:48:25 by idiaz-ca         ###   ########.fr       */
+/*   Updated: 2026/05/14 16:56:48 by idiaz-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,10 @@ char				**read_file(char *filename);
 int					check_extension(char *filename);
 void				split_file(char **file, char ***config, char ***map);
 int					find_map_start(char **file);
+int					starts_with(char *line, char *prefix);
 void				parse_config(char **config, t_game *game);
+void				parse_color(char *line, int rgb[3]);
+void				parse_texture(char *line, char **texture, char *id);
 void				raycast(t_game *g);
 void				validate_map(t_game *game);
 void				validate_player(char **map);
