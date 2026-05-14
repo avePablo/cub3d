@@ -1,0 +1,14 @@
+{
+   libGLX_mesa_leak
+   Memcheck:Leak
+   match-leak-kinds: possible
+   ...
+   obj:*libGLX_mesa*
+}
+{
+   libglfw_leak
+   Memcheck:Leak
+   match-leak-kinds: possible
+   ...
+   obj:*libglfw*
+}

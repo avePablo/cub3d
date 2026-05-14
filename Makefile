@@ -20,9 +20,12 @@ MLX42_LIB   = $(MLX42_BUILD)/libmlx42.a
 MLX42_INC   = -I$(MLX42_DIR)/include
 MLX42_DEPS  = $(MLX42_LIB)
 
+# Sanitizers
+#SANITIZE = -fsanitize=address -g
+
 # Compilación
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror
+CFLAGS      = -Wall -Wextra -Werror #$(SANITIZE)
 INCLUDES    = -I$(INCLUDE_DIR) -I$(LIBFT_DIR)
 
 # Librerías adicionales necesarias en Linux
@@ -32,15 +35,21 @@ MLX42_LDFLAGS = -lglfw -ldl -lm -lpthread
 #                                 SOURCES                                      #
 # **************************************************************************** #
 
-SRC = $(SRC_DIR)/exec/init.c \
-	  $(SRC_DIR)/exec/main.c \
+SRC = $(SRC_DIR)/main.c \
+	  $(SRC_DIR)/exec/init.c \
       $(SRC_DIR)/parser/parser.c \
       $(SRC_DIR)/parser/split_file.c \
 	  $(SRC_DIR)/parser/parser_setter.c \
 	  $(SRC_DIR)/parser/parser_helper.c \
+	  $(SRC_DIR)/parser/validate.c \
+	  $(SRC_DIR)/parser/rectangular.c \
 	  $(SRC_DIR)/exec/raycast.c \
 	  $(SRC_DIR)/exec/raycast_init.c \
 	  $(SRC_DIR)/exec/raycast_helper.c \
+	  $(SRC_DIR)/exec/raycast_draw.c \
+	  $(SRC_DIR)/exec/moves.c \
+	  $(SRC_DIR)/exec/textures.c \
+	  $(SRC_DIR)/exec/free.c \
 
 
 OBJ = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))
