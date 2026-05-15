@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3D.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:42:01 by idiaz-ca          #+#    #+#             */
-/*   Updated: 2026/05/14 16:56:48 by idiaz-ca         ###   ########.fr       */
+/*   Updated: 2026/05/15 01:40:50 by kfuto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,5 +164,7 @@ char				get_cell(t_game *g, int x, int y);
 int					init_map(int argc, char **argv, t_game *game);
 int					init_mlx(t_game *game);
 void				handle_input(t_game *g);
+void				free_array(char **arr);
+void				free_game(t_game *game);
 
 #endif

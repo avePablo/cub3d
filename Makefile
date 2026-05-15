@@ -51,7 +51,7 @@ SRC = $(SRC_DIR)/main.c \
 	  $(SRC_DIR)/exec/raycast_draw.c \
 	  $(SRC_DIR)/exec/moves.c \
 	  $(SRC_DIR)/exec/textures.c \
-
+	  $(SRC_DIR)/exec/free.c \
 
 OBJ = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))
 

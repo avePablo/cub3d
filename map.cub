@@ -1,7 +1,7 @@
-NO ./a.png
-SO ./b.png
-EA ./c.png
-WE ./d.png
+NO ./textures/a.png
+SO ./textures/b.png
+EA ./textures/c.png
+WE ./textures/d.png
 
 F 55,55,55
 C 100,100,100

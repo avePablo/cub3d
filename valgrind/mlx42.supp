@@ -1,0 +1,411 @@
+# =============================================================================
+# MLX42 + GLFW + libX11 + OpenGL + Mesa + LLVM Valgrind Suppression File
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# dlopen / dynamic linker
+# -----------------------------------------------------------------------------
+{
+   dlopen_dl_find_object_update
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   fun:malloc
+   ...
+   fun:_dl_find_object_update
+   ...
+}
+
+{
+   dlopen_dl_find_object_update_1
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   fun:malloc
+   ...
+   fun:_dl_find_object_update_1
+   ...
+}
+
+{
+   dlopen_dl_open
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   fun:malloc
+   ...
+   fun:_dl_open
+   ...
+}
+
+{
+   dlopen_glibc
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   fun:malloc
+   ...
+   fun:dlopen@@GLIBC_2.34
+   ...
+}
+
+# -----------------------------------------------------------------------------
+# libX11 - locale / input method
+# -----------------------------------------------------------------------------
+{
+   libX11_XlcCreateLC
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:_XlcCreateLC
+   ...
+}
+
+{
+   libX11_XOpenLC
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:_XOpenLC
+   ...
+}
+
+{
+   libX11_XlcMapOSLocaleName
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:_XlcMapOSLocaleName
+   ...
+}
+
+{
+   libX11_XlcCurrentLC
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:_XlcCurrentLC
+   ...
+}
+
+{
+   libX11_XlcDefaultLoader
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:_XlcDefaultLoader
+   ...
+}
+
+{
+   libX11_XlcAddUtf8Converters
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:_XlcAddUtf8Converters
+   ...
+}
+
+{
+   libX11_XlcSetConverter
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:_XlcSetConverter
+   ...
+}
+
+{
+   libX11_XrmInitParseInfo
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:_XrmInitParseInfo
+   ...
+}
+
+{
+   libX11_XrmGetStringDatabase
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:XrmGetStringDatabase
+   ...
+}
+
+{
+   libX11_XlcDefaultMapModifiers
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:_XlcDefaultMapModifiers
+   ...
+}
+
+{
+   libX11_XSetLocaleModifiers
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:XSetLocaleModifiers
+   ...
+}
+
+{
+   libX11_XSupportsLocale
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:XSupportsLocale
+   ...
+}
+
+{
+   libX11_XimOpenIM
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:_XimOpenIM
+   ...
+}
+
+{
+   libX11_XimLocalOpenIM
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:_XimLocalOpenIM
+   ...
+}
+
+{
+   libX11_XRegisterIMInstantiateCallback
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:XRegisterIMInstantiateCallback
+   ...
+}
+
+{
+   libX11_XimRegisterIMInstantiateCallback
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:_XimRegisterIMInstantiateCallback
+   ...
+}
+
+# -----------------------------------------------------------------------------
+# GLFW
+# -----------------------------------------------------------------------------
+{
+   glfw_init_leak
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:glfwInit
+   ...
+}
+
+{
+   glfw_create_window
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:glfwCreateWindow
+   ...
+}
+
+# -----------------------------------------------------------------------------
+# MLX42
+# -----------------------------------------------------------------------------
+{
+   mlx_init_leak
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:mlx_init
+   ...
+}
+
+# -----------------------------------------------------------------------------
+# Mesa / Gallium / libGLX
+# -----------------------------------------------------------------------------
+{
+   mesa_gallium_leak
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   obj:*/libgallium*
+   ...
+}
+
+{
+   mesa_GLX_leak
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   obj:*/libGLX*
+   ...
+}
+
+{
+   libGL_leak
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   obj:*/libGL*
+   ...
+}
+
+{
+   libEGL_leak
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   obj:*/libEGL*
+   ...
+}
+
+{
+   mesa_driCreateContextAttribs
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:driCreateContextAttribs
+   ...
+}
+
+{
+   mesa_driCreateNewScreen3
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:driCreateNewScreen3
+   ...
+}
+
+{
+   mesa_noop_screen_create
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:noop_screen_create
+   ...
+}
+
+# -----------------------------------------------------------------------------
+# LLVM (shaders)
+# -----------------------------------------------------------------------------
+{
+   llvm_leak
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   obj:*/libLLVM*
+   ...
+}
+
+{
+   llvm_LLVMAddFunction
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:LLVMAddFunction
+   ...
+}
+
+{
+   llvm_LLVMBuildCall2
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:LLVMBuildCall2
+   ...
+}
+
+{
+   llvm_LLVMBuildIntToPtr
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:LLVMBuildIntToPtr
+   ...
+}
+
+{
+   llvm_LLVMBuildAdd
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:LLVMBuildAdd
+   ...
+}
+
+{
+   llvm_LLVMBuildLoad2
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:LLVMBuildLoad2
+   ...
+}
+
+{
+   llvm_LLVMAppendBasicBlockInContext
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:LLVMAppendBasicBlockInContext
+   ...
+}
+
+# -----------------------------------------------------------------------------
+# pthread desde gallium / dl_init
+# -----------------------------------------------------------------------------
+{
+   gallium_pthread_create
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:pthread_create@@GLIBC_2.34
+   obj:*/libgallium*
+   ...
+}
+
+{
+   dl_init_gallium
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   ...
+   fun:call_init
+   fun:_dl_init
+   ...
+}
+
+# -----------------------------------------------------------------------------
+# Falsos positivos Cond/Uninit
+# -----------------------------------------------------------------------------
+{
+   libX11_cond_uninit
+   Memcheck:Cond
+   obj:*/libX11*
+   ...
+}
+
+{
+   glfw_cond_uninit
+   Memcheck:Cond
+   obj:*/libglfw*
+   ...
+}
+
+{
+   libGL_cond
+   Memcheck:Cond
+   obj:*/libGL*
+   ...
+}
+
+{
+   gallium_pthread_once2
+   Memcheck:Leak
+   match-leak-kinds: possible,definite,reachable
+   fun:malloc
+   ...
+   fun:__pthread_once_slow
+   obj:*/libgallium*
+   ...
+}

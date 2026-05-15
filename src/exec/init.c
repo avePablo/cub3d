@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 18:57:32 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/13 17:42:07 by idiaz-ca         ###   ########.fr       */
+/*   Updated: 2026/05/15 01:38:25 by kfuto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,18 @@ int	init_map(int argc, char **argv, t_game *game)
 {
 	char	**file;
 	char	**config;
+	char	**old_map;
 
 	if (validate_and_read_file(argc, argv, &file))
 		return (1);
 	validate_map_lines(file);
 	split_file(file, &config, &game->map);
+	old_map = game->map;
 	game->map = make_map_rectangular(game->map);
+	free(old_map);
 	parse_config(config, game);
+	free(config);
+	free_array(file);
 	load_textures(game);
 	validate_textures(game);
 	validate_player(game->map);
