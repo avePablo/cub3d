@@ -1,7 +1,7 @@
-NO ./a.png
-SO ./b.png
-EA ./c.png
-WE ./d.png
+NO ./textures/a.png
+SO ./textures/b.png
+EA ./textures/c.png
+WE ./textures/d.png
 
 C 135,206,235
 
