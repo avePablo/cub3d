@@ -12,7 +12,7 @@
 
 #include "cub3D.h"
 
-// Comprueba que haya exactamente un jugador en el mapa
+// Checks that there is exactly one player in the map
 void	validate_player(char **map)
 {
 	int	i;
@@ -40,7 +40,7 @@ void	validate_player(char **map)
 	}
 }
 
-/* Valida un caracter del mapa y comprueba si la celda es cerrada */
+/* Validates a map character and checks whether the cell is enclosed */
 static void	validate_map_cell(char **map, int y, int x)
 {
 	if (map[y][x] != '0' && map[y][x] != '1' && map[y][x] != 'N'
@@ -62,8 +62,8 @@ static void	validate_map_cell(char **map, int y, int x)
 	}
 }
 
-/* Valida que el mapa esté cerrado
-(que no haya espacios alrededor de los '0' o jugadores) */
+/* Validates that the map is enclosed
+	(there are no spaces around '0' cells or players) */
 void	validate_map_closed(char **map)
 {
 	int	y;
@@ -82,8 +82,8 @@ void	validate_map_closed(char **map)
 	}
 }
 
-/* Agrega una línea al array de strings (file) y devuelve
- el nuevo array (libera el antiguo)*/
+/* Adds a line to the string array (file) and returns
+	the new array (frees the old one) */
 static char	**add_line(char **file, char *line, int size)
 {
 	char	**new;
@@ -107,7 +107,7 @@ static char	**add_line(char **file, char *line, int size)
 	return (new);
 }
 
-// Lee el archivo línea por línea y lo guarda en un array de strings
+// Reads the file line by line and stores it in a string array
 char	**read_file(char *filename)
 {
 	int		fd;

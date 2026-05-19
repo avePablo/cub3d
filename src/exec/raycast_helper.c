@@ -12,8 +12,8 @@
 
 #include "cub3D.h"
 
-/* Calcula la distancia perpendicular a la pared
-y el rango vertical a dibujar */
+/* Calculates the perpendicular wall distance
+	and the vertical range to draw */
 void	get_line_height(t_game *g, t_raycast *r)
 {
 	if (r->side == 0)
@@ -27,8 +27,8 @@ void	get_line_height(t_game *g, t_raycast *r)
 	r->draw_end = r->line_height / 2 + WINDOW_HEIGHT / 2;
 }
 
-/* Devuelve el caracter del mapa en (x, y),
-tratando fuera de limites como pared */
+/* Returns the map character at (x, y),
+   treating out-of-bounds as a wall */
 char	get_cell(t_game *g, int x, int y)
 {
 	if (!g->map[y])

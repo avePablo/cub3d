@@ -12,7 +12,7 @@
 
 #include "cub3D.h"
 
-// Comprueba si line empieza con prefix
+// Checks whether line starts with prefix
 int	starts_with(char *line, char *prefix)
 {
 	int	len;
@@ -23,8 +23,8 @@ int	starts_with(char *line, char *prefix)
 	return (prefix[len] == '\0');
 }
 
-/* Extrae ruta: "NO ./a.png"
-	-> "./a.png" (debemos evitar copiar espacios y saltos de línea)*/
+/* Extracts the path from "NO ./a.png"
+	-> "./a.png" (spaces and newline characters must be skipped) */
 static char	*extract_path(char *line)
 {
 	char	*start;

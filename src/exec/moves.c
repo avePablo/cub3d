@@ -15,8 +15,8 @@
 #define MOVE_SPEED 0.10
 #define ROT_SPEED 0.10
 
-/* Rota la dirección y el plano de cámara con una matriz de rotación 2D.
-   angle > 0 → gira a la derecha, angle < 0 → gira a la izquierda */
+/* Rotates the direction and camera plane with a 2D rotation matrix.
+	angle > 0 -> turns right, angle < 0 -> turns left */
 static void	rotate_player(t_game *g, double angle)
 {
 	double	old_dir_x;
@@ -33,8 +33,8 @@ static void	rotate_player(t_game *g, double angle)
 		* cos(angle);
 }
 
-/* Intenta mover al jugador en la dirección (dx, dy).
-   Comprueba colisión con paredes antes de actualizar la posición. */
+/* Tries to move the player in the (dx, dy) direction.
+	Checks wall collisions before updating the position. */
 static void	try_move(t_game *g, double dx, double dy)
 {
 	double	new_x;
@@ -48,7 +48,7 @@ static void	try_move(t_game *g, double dx, double dy)
 		g->player.pos_y = new_y;
 }
 
-/* Lee el estado del teclado cada frame y hace rotacion / wasd / esc */
+/* Reads the keyboard state every frame and handles rotation / WASD / ESC */
 void	handle_input(t_game *g)
 {
 	if (mlx_is_key_down(g->mlx, MLX_KEY_ESCAPE))

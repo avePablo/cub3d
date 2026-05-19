@@ -12,7 +12,7 @@
 
 #include "cub3D.h"
 
-/* Escribe un pixel RGBA en el buffer de imagen en la posicion (x, y) */
+/* Writes an RGBA pixel into the image buffer at position (x, y) */
 void	put_pixel(mlx_image_t *img, int x, int y, uint32_t color)
 {
 	uint8_t	*pixel;
@@ -26,7 +26,7 @@ void	put_pixel(mlx_image_t *img, int x, int y, uint32_t color)
 	pixel[3] = (color >> 0) & 0xFF;
 }
 
-/* Obtiene la textura correspondiente a un rayo */
+/* Gets the texture corresponding to a ray */
 static mlx_texture_t	*get_texture(t_game *g, t_raycast *r)
 {
 	if (r->side == 0)
@@ -40,7 +40,7 @@ static mlx_texture_t	*get_texture(t_game *g, t_raycast *r)
 	return (g->tex_so);
 }
 
-/* Obtiene la coordenada X de la textura para un rayo */
+/* Gets the texture X coordinate for a ray */
 static int	get_tex_x(t_game *g, t_raycast *r, mlx_texture_t *tex)
 {
 	double	wall_x;
@@ -53,7 +53,7 @@ static int	get_tex_x(t_game *g, t_raycast *r, mlx_texture_t *tex)
 	return ((int)(wall_x * tex->width));
 }
 
-/* Dibuja la pared para una columna de pantalla */
+/* Draws the wall for a screen column */
 static void	draw_wall(t_game *g, t_raycast *r, mlx_texture_t *tex, int x)
 {
 	int			tex_x;
@@ -74,8 +74,8 @@ static void	draw_wall(t_game *g, t_raycast *r, mlx_texture_t *tex, int x)
 	}
 }
 
-/*dibuja el techo,
-	el fragmento de pared y el suelo para una columna de pantalla*/
+/* Draws the ceiling,
+	the wall slice, and the floor for a screen column */
 void	draw_column(t_game *g, t_raycast *r, int x)
 {
 	mlx_texture_t	*tex;

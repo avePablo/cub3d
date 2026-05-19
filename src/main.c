@@ -12,7 +12,7 @@
 
 #include "cub3D.h"
 
-/* Callback llamado cada frame por MLX, lanza el renderizado por raycast */
+/* Callback called every frame by MLX, triggers raycast rendering */
 static void	render(void *param)
 {
 	t_game	*g;
@@ -22,8 +22,8 @@ static void	render(void *param)
 	raycast(g);
 }
 
-/* Punto de entrada: inicializa el estado del juego, el mapa,
-   la ventana MLX y arranca el bucle principal */
+/* Entry point: initializes the game state, the map,
+   the MLX window, and starts the main loop */
 int	main(int argc, char **argv)
 {
 	t_game	game;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3D.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:42:01 by idiaz-ca          #+#    #+#             */
-/*   Updated: 2026/05/15 01:40:50 by kfuto            ###   ########.fr       */
+/*   Updated: 2026/05/19 10:53:25 by idiaz-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "libft.h"
 # include <fcntl.h>
 # include <math.h>
-# include <stdint.h> //para uint32_t(unisgned int de 32 bits)
+# include <stdint.h> // For uint32_t (32-bit unsigned integer)
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
@@ -25,27 +25,27 @@
 # define WINDOW_WIDTH 1920
 # define WINDOW_HEIGHT 1080
 
-// ESTRUCTURA PARA RAYCASTING
+// RAYCASTING STRUCTURE
 /*typedef struct s_raycast
 {
-	double camera_x;  // Coordenada X en el espacio de la cámara
-	double ray_dir_x; // Dirección X del rayo
-	double ray_dir_y; // Dirección Y del rayo
-	int map_x;        // Coordenada X del mapa (celda actual)
-	int map_y;        // Coordenada Y del mapa (celda actual)
-	double	delta_x; // Distancia que el rayo tiene que recorrer para
-						pasar de una línea vertical a la siguiente
-	double	delta_y; // Distancia que el rayo tiene que recorrer para
-						pasar de una línea horizontal a la siguiente
-	double side_x;         // Distancia al siguiente paso en dirección X
-	double side_y;         // Distancia al siguiente paso en dirección Y
-	int step_x;            // Paso en dirección X
-	int step_y;            // Paso en dirección Y
-	int side;              // Lado del muro que se ha colisionado
-	double perp_wall_dist; // Distancia perpendicular al muro
-	int line_height;       // Altura de la línea a dibujar
-	int draw_start;        // Punto de inicio para dibujar
-	int draw_end;          // Punto de final para dibujar
+	double camera_x;  // X coordinate in camera space
+	double ray_dir_x; // Ray direction X
+	double ray_dir_y; // Ray direction Y
+	int map_x;        // X coordinate in the map (current cell)
+	int map_y;        // Y coordinate in the map (current cell)
+	double	delta_x; // Distance the ray has to travel to
+						move from one vertical line to the next
+	double	delta_y; // Distance the ray has to travel to
+						move from one horizontal line to the next
+	double side_x;         // Distance to the next step in X direction
+	double side_y;         // Distance to the next step in Y direction
+	int step_x;            // Step in X direction
+	int step_y;            // Step in Y direction
+	int side;              // Side of the wall that was hit
+	double perp_wall_dist; // Perpendicular distance to the wall
+	int line_height;       // Height of the line to draw
+	int draw_start;        // Starting point for drawing
+	int draw_end;          // Ending point for drawing
 }			t_raycast;*/
 typedef struct s_raycast
 {
@@ -67,15 +67,15 @@ typedef struct s_raycast
 	int				draw_end;
 }					t_raycast;
 
-// ESTRUCTURA PRINCIPAL DEL JUGADOR
+// MAIN PLAYER STRUCTURE
 /*typedef struct s_player
 {
-	double pos_x;   // Posición X del jugador
-	double pos_y;   // Posición Y del jugador
-	double dir_x;   // Dirección X del jugador
-	double dir_y;   // Dirección Y del jugador
-	double plane_x; // Plano de la cámara X (perpendicular a la dirección)
-	double plane_y; // Plano de la cámara Y (perpendicular a la dirección)
+	double pos_x;   // Player X position
+	double pos_y;   // Player Y position
+	double dir_x;   // Player direction X
+	double dir_y;   // Player direction Y
+	double plane_x; // Camera plane X (perpendicular to direction)
+	double plane_y; // Camera plane Y (perpendicular to direction)
 }			t_player;*/
 typedef struct s_player
 {
@@ -87,28 +87,28 @@ typedef struct s_player
 	double			plane_y;
 }					t_player;
 
-// ESTRUCTURA PRINCIPAL DEL JUEGO
+// MAIN GAME STRUCTURE
 /*typedef struct s_game
 {
-	char **map;             // Mapa del juego
-	char *no;               // Ruta de la textura norte
-	char *so;               // Ruta de la textura sur
-	char *we;               // Ruta de la textura oeste
-	char *ea;               // Ruta de la textura este
-	mlx_texture_t *tex_no;  // Textura norte cargada
-	mlx_texture_t *tex_so;  // Textura sur cargada
-	mlx_texture_t *tex_we;  // Textura oeste cargada
-	mlx_texture_t *tex_ea;  // Textura este cargada
-	int f[3];               // Color del piso (RGB)
-	int c[3];               // Color del techo (RGB)
-	uint32_t floor_color;   // Color del piso en formato RGBA
-	uint32_t ceiling_color; // Color del techo en formato RGBA
-	int map_width;          // Ancho del mapa
-	int map_height;         // Alto del mapa
-	mlx_t *mlx;             // Contexto de MLX
-	mlx_image_t *img;       // Imagen para renderizar el juego
-	t_player player;        // Información del jugador (posición,
-							dirección,plano)
+	char **map;             // Game map
+	char *no;               // North texture path
+	char *so;               // South texture path
+	char *we;               // West texture path
+	char *ea;               // East texture path
+	mlx_texture_t *tex_no;  // Loaded north texture
+	mlx_texture_t *tex_so;  // Loaded south texture
+	mlx_texture_t *tex_we;  // Loaded west texture
+	mlx_texture_t *tex_ea;  // Loaded east texture
+	int f[3];               // Floor color (RGB)
+	int c[3];               // Ceiling color (RGB)
+	uint32_t floor_color;   // Floor color in RGBA format
+	uint32_t ceiling_color; // Ceiling color in RGBA format
+	int map_width;          // Map width
+	int map_height;         // Map height
+	mlx_t *mlx;             // MLX context
+	mlx_image_t *img;       // Image used to render the game
+	t_player player;        // Player info (position,
+							direction, plane)
 }			t_game;*/
 typedef struct s_game
 {

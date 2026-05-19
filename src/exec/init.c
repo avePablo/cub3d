@@ -12,8 +12,7 @@
 
 #include "cub3D.h"
 
-/* Valida el número de argumentos, la extensión del archivo y lee el contenido
-   del archivo */
+/* Validates the argument count, file extension, and reads the file content */
 static int	validate_and_read_file(int argc, char **argv, char ***file)
 {
 	if (argc != 2)
@@ -29,7 +28,7 @@ static int	validate_and_read_file(int argc, char **argv, char ***file)
 	return (0);
 }
 
-// Valida las líneas del mapa
+// Validates the map lines
 static void	validate_map_lines(char **file)
 {
 	int	map_start;
@@ -46,8 +45,8 @@ static void	validate_map_lines(char **file)
 	}
 }
 
-/* Lee el fichero del mapa, lo divide en config y mapa,
-   valida el mapa e inicializa la posicion del jugador */
+/* Reads the map file, splits it into config and map,
+   validates the map, and initializes the player position */
 int	init_map(int argc, char **argv, t_game *game)
 {
 	char	**file;
@@ -73,8 +72,8 @@ int	init_map(int argc, char **argv, t_game *game)
 	return (0);
 }
 
-/* Inicializa la ventana MLX, crea el buffer de imagen
-   y lo asocia a la ventana */
+/* Initializes the MLX window, creates the image buffer,
+	and attaches it to the window */
 int	init_mlx(t_game *game)
 {
 	game->mlx = mlx_init(WINDOW_WIDTH, WINDOW_HEIGHT, "Cub3D", true);

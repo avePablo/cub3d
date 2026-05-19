@@ -58,10 +58,10 @@ void	parse_color(char *line, int rgb[3])
 	}
 }
 
-// funcion que convierte RGB a RGBA (añadiendo el canal alpha con valor 255)
-/* El formato RGBA se representa como 0xRRGGBBAA,
-	donde AA es el canal alpha, desplazado 8 bits a la izquierda.
-	el 255 representa el valor del canal alpha(transparencia total)*/
+/* Converts RGB to RGBA (adding an alpha channel with value 255)
+	The RGBA format is represented as 0xRRGGBBAA,
+	where AA is the alpha channel shifted 8 bits to the left.
+	255 represents the alpha value (fully opaque). */
 uint32_t	rgb_to_hex(int r, int g, int b)
 {
 	return ((r << 24) | (g << 16) | (b << 8) | 255);

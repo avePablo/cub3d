@@ -12,7 +12,7 @@
 
 #include "cub3D.h"
 
-/* Devuelve el índice donde empieza el mapa en el array `file` */
+/* Returns the index where the map starts in the `file` array */
 int	find_map_start(char **file)
 {
 	int	i;
@@ -23,7 +23,7 @@ int	find_map_start(char **file)
 	return (i);
 }
 
-/* Crea el array de configuración copiando las primeras `map_start` líneas */
+/* Creates the configuration array by copying the first `map_start` lines */
 static char	**alloc_config(char **file, int map_start)
 {
 	char	**config;
@@ -42,7 +42,7 @@ static char	**alloc_config(char **file, int map_start)
 	return (config);
 }
 
-/* Crea el array del mapa (solo líneas no vacías) a partir de map_start */
+/* Creates the map array (non-empty lines only) starting from `map_start` */
 static char	**alloc_map(char **file, int map_start)
 {
 	char	**map;
@@ -71,7 +71,7 @@ static char	**alloc_map(char **file, int map_start)
 	return (map);
 }
 
-/* Separa el archivo en configuración y mapa */
+/* Splits the file into configuration and map */
 void	split_file(char **file, char ***config, char ***map)
 {
 	int	map_start;
