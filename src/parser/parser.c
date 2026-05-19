@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 12:23:44 by idiaz-ca          #+#    #+#             */
-/*   Updated: 2026/05/10 19:22:42 by idiaz-ca         ###   ########.fr       */
+/*   Updated: 2026/05/19 13:45:47 by pabalvar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,5 +130,6 @@ char	**read_file(char *filename)
 		line = get_next_line(fd);
 	}
 	close(fd);
+	free(line);
 	return (file);
 }

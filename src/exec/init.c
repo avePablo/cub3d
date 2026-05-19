@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 18:57:32 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/15 01:38:25 by kfuto            ###   ########.fr       */
+/*   Updated: 2026/05/19 13:43:47 by pabalvar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static int	validate_and_read_file(int argc, char **argv, char ***file)
 }
 
 // Validates the map lines
-static void	validate_map_lines(char **file)
+static int	validate_map_lines(char **file)
 {
 	int	map_start;
 
@@ -39,10 +39,11 @@ static void	validate_map_lines(char **file)
 		if (is_empty_line(file[map_start]))
 		{
 			ft_putstr_fd("Error: Empty line detected within the map\n", 2);
-			exit(1);
+			return (1);
 		}
 		map_start++;
 	}
+	return (0);
 }
 
 /* Reads the map file, splits it into config and map,
@@ -55,7 +56,11 @@ int	init_map(int argc, char **argv, t_game *game)
 
 	if (validate_and_read_file(argc, argv, &file))
 		return (1);
-	validate_map_lines(file);
+	if (validate_map_lines(file))
+	{
+		free_array(file);
+		return (1);
+	}
 	split_file(file, &config, &game->map);
 	old_map = game->map;
 	game->map = make_map_rectangular(game->map);

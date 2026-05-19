@@ -1,0 +1,1418 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cub3D.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/13 19:42:01 by idiaz-ca          #+#    #+#             */
+/*   Updated: 2026/05/19 10:53:25 by idiaz-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef CUB3D_H
+# define CUB3D_H
+
+# include "../MLX42/include/MLX42/MLX42.h"
+# include "libft.h"
+# include <fcntl.h>
+# include <math.h>
+# include <stdint.h> // For uint32_t (32-bit unsigned integer)
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+
+# define WINDOW_WIDTH 1920
+# define WINDOW_HEIGHT 1080
+
+// RAYCASTING STRUCTURE
+/*typedef struct s_raycast
+{
+	double camera_x;  // X coordinate in camera space
+	double ray_dir_x; // Ray direction X
+	double ray_dir_y; // Ray direction Y
+	int map_x;        // X coordinate in the map (current cell)
+	int map_y;        // Y coordinate in the map (current cell)
+	double	delta_x; // Distance the ray has to travel to
+						move from one vertical line to the next
+	double	delta_y; // Distance the ray has to travel to
+						move from one horizontal line to the next
+	double side_x;         // Distance to the next step in X direction
+	double side_y;         // Distance to the next step in Y direction
+	int step_x;            // Step in X direction
+	int step_y;            // Step in Y direction
+	int side;              // Side of the wall that was hit
+	double perp_wall_dist; // Perpendicular distance to the wall
+	int line_height;       // Height of the line to draw
+	int draw_start;        // Starting point for drawing
+	int draw_end;          // Ending point for drawing
+}			t_raycast;*/
+typedef struct s_raycast
+{
+	double			camera_x;
+	double			ray_dir_x;
+	double			ray_dir_y;
+	int				map_x;
+	int				map_y;
+	double			delta_x;
+	double			delta_y;
+	double			side_x;
+	double			side_y;
+	int				step_x;
+	int				step_y;
+	int				side;
+	double			perp_wall_dist;
+	int				line_height;
+	int				draw_start;
+	int				draw_end;
+}					t_raycast;
+
+// MAIN PLAYER STRUCTURE
+/*typedef struct s_player
+{
+	double pos_x;   // Player X position
+	double pos_y;   // Player Y position
+	double dir_x;   // Player direction X
+	double dir_y;   // Player direction Y
+	double plane_x; // Camera plane X (perpendicular to direction)
+	double plane_y; // Camera plane Y (perpendicular to direction)
+}			t_player;*/
+typedef struct s_player
+{
+	double			pos_x;
+	double			pos_y;
+	double			dir_x;
+	double			dir_y;
+	double			plane_x;
+	double			plane_y;
+}					t_player;
+
+// MAIN GAME STRUCTURE
+/*typedef struct s_game
+{
+	char **map;             // Game map
+	char *no;               // North texture path
+	char *so;               // South texture path
+	char *we;               // West texture path
+	char *ea;               // East texture path
+	mlx_texture_t *tex_no;  // Loaded north texture
+	mlx_texture_t *tex_so;  // Loaded south texture
+	mlx_texture_t *tex_we;  // Loaded west texture
+	mlx_texture_t *tex_ea;  // Loaded east texture
+	int f[3];               // Floor color (RGB)
+	int c[3];               // Ceiling color (RGB)
+	uint32_t floor_color;   // Floor color in RGBA format
+	uint32_t ceiling_color; // Ceiling color in RGBA format
+	int map_width;          // Map width
+	int map_height;         // Map height
+	mlx_t *mlx;             // MLX context
+	mlx_image_t *img;       // Image used to render the game
+	t_player player;        // Player info (position,
+							direction, plane)
+}			t_game;*/
+typedef struct s_game
+{
+	char			**map;
+	char			*no;
+	char			*so;
+	char			*we;
+	char			*ea;
+	mlx_texture_t	*tex_no;
+	mlx_texture_t	*tex_so;
+	mlx_texture_t	*tex_we;
+	mlx_texture_t	*tex_ea;
+	int				f[3];
+	int				c[3];
+	uint32_t		floor_color;
+	uint32_t		ceiling_color;
+	int				map_width;
+	int				map_height;
+	mlx_t			*mlx;
+	mlx_image_t		*img;
+	t_player		player;
+}					t_game;
+
+char				**read_file(char *filename);
+int					check_extension(char *filename);
+void				split_file(char **file, char ***config, char ***map);
+int					find_map_start(char **file);
+int					starts_with(char *line, char *prefix);
+void				parse_config(char **config, t_game *game);
+void				parse_color(char *line, int rgb[3]);
+void				parse_texture(char *line, char **texture, char *id);
+void				raycast(t_game *g);
+void				validate_map(t_game *game);
+void				validate_player(char **map);
+void				validate_map_closed(char **map);
+void				validate_textures(t_game *game);
+char				**make_map_rectangular(char **map);
+void				load_textures(t_game *game);
+uint32_t			get_texture_pixel(mlx_texture_t *tex, int x, int y);
+int					is_config_line(char *line);
+int					is_map_line(char *line);
+int					is_empty_line(char *line);
+int					is_valid_cell(char **map, int y, int x);
+void				init_player_from_map(t_game *g);
+void				init_ray(t_game *g, t_raycast *r, int x);
+void				init_dda(t_game *g, t_raycast *r);
+void				perform_dda(t_game *g, t_raycast *r);
+void				draw_column(t_game *g, t_raycast *r, int x);
+void				get_line_height(t_game *g, t_raycast *r);
+void				put_pixel(mlx_image_t *img, int x, int y, uint32_t color);
+uint32_t			rgb_to_hex(int r, int g, int b);
+char				get_cell(t_game *g, int x, int y);
+int					init_map(int argc, char **argv, t_game *game);
+int					init_mlx(t_game *game);
+void				handle_input(t_game *g);
+void				free_array(char **arr);
+void				free_game(t_game *game);
+
+#endif
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/14 00:00:00 by idiaz-ca          #+#    #+#             */
+/*   Updated: 2026/05/14 15:41:43 by kfuto            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+void	free_array(char **arr)
+{
+	int	i;
+
+	if (!arr)
+		return ;
+	i = 0;
+	while (arr[i])
+		free(arr[i++]);
+	free(arr);
+}
+
+void	free_game(t_game *game)
+{
+	if (!game)
+		return ;
+	free_array(game->map);
+	if (game->no)
+		free(game->no);
+	if (game->so)
+		free(game->so);
+	if (game->we)
+		free(game->we);
+	if (game->ea)
+		free(game->ea);
+	if (game->tex_no)
+		mlx_delete_texture(game->tex_no);
+	if (game->tex_so)
+		mlx_delete_texture(game->tex_so);
+	if (game->tex_we)
+		mlx_delete_texture(game->tex_we);
+	if (game->tex_ea)
+		mlx_delete_texture(game->tex_ea);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/02 18:57:32 by kfuto             #+#    #+#             */
+/*   Updated: 2026/05/19 13:43:08 by pabalvar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+/* Validates the argument count, file extension, and reads the file content */
+static int	validate_and_read_file(int argc, char **argv, char ***file)
+{
+	if (argc != 2)
+		return (ft_putstr_fd("Error\n", 2), 1);
+	if (!check_extension(argv[1]))
+	{
+		ft_putstr_fd("Error: Invalid file extension\n", 2);
+		return (1);
+	}
+	*file = read_file(argv[1]);
+	if (!*file)
+		return (ft_putstr_fd("Error\n", 2), 1);
+	return (0);
+}
+
+// Validates the map lines
+static int	validate_map_lines(char **file)
+{
+	int	map_start;
+
+	map_start = find_map_start(file);
+	while (file[map_start])
+	{
+		if (is_empty_line(file[map_start]))
+		{
+			ft_putstr_fd("Error: Empty line detected within the map\n", 2);
+			return(1);
+		}
+		map_start++;
+	}
+	return (0);
+}
+
+/* Reads the map file, splits it into config and map,
+   validates the map, and initializes the player position */
+int	init_map(int argc, char **argv, t_game *game)
+{
+	char	**file;
+	char	**config;
+	char	**old_map;
+
+	if (validate_and_read_file(argc, argv, &file))
+		return (1);
+	if (validate_map_lines(file))
+	{
+		free_array(file);
+		return (1);
+	}
+	split_file(file, &config, &game->map);
+	old_map = game->map;
+	game->map = make_map_rectangular(game->map);
+	free(old_map);
+	parse_config(config, game);
+	free(config);
+	free_array(file);
+	load_textures(game);
+	validate_textures(game);
+	validate_player(game->map);
+	validate_map_closed(game->map);
+	init_player_from_map(game);
+	validate_map(game);
+	return (0);
+}
+
+/* Initializes the MLX window, creates the image buffer,
+	and attaches it to the window */
+int	init_mlx(t_game *game)
+{
+	game->mlx = mlx_init(WINDOW_WIDTH, WINDOW_HEIGHT, "Cub3D", true);
+	if (!game->mlx)
+		return (ft_putstr_fd("Error MLX\n", 2), 1);
+	game->img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
+	if (!game->img)
+		return (ft_putstr_fd("Error imagen\n", 2), 1);
+	if (mlx_image_to_window(game->mlx, game->img, 0, 0) < 0)
+		return (ft_putstr_fd("Error window\n", 2), 1);
+	return (0);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   moves.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/08 01:52:56 by kfuto             #+#    #+#             */
+/*   Updated: 2026/05/13 18:33:29 by idiaz-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+#define MOVE_SPEED 0.10
+#define ROT_SPEED 0.10
+
+/* Rotates the direction and camera plane with a 2D rotation matrix.
+	angle > 0 -> turns right, angle < 0 -> turns left */
+static void	rotate_player(t_game *g, double angle)
+{
+	double	old_dir_x;
+	double	old_plane_x;
+
+	old_dir_x = g->player.dir_x;
+	g->player.dir_x = g->player.dir_x * cos(angle) - g->player.dir_y
+		* sin(angle);
+	g->player.dir_y = old_dir_x * sin(angle) + g->player.dir_y * cos(angle);
+	old_plane_x = g->player.plane_x;
+	g->player.plane_x = g->player.plane_x * cos(angle) - g->player.plane_y
+		* sin(angle);
+	g->player.plane_y = old_plane_x * sin(angle) + g->player.plane_y
+		* cos(angle);
+}
+
+/* Tries to move the player in the (dx, dy) direction.
+	Checks wall collisions before updating the position. */
+static void	try_move(t_game *g, double dx, double dy)
+{
+	double	new_x;
+	double	new_y;
+
+	new_x = g->player.pos_x + dx;
+	new_y = g->player.pos_y + dy;
+	if (get_cell(g, (int)new_x, (int)g->player.pos_y) != '1')
+		g->player.pos_x = new_x;
+	if (get_cell(g, (int)g->player.pos_x, (int)new_y) != '1')
+		g->player.pos_y = new_y;
+}
+
+/* Reads the keyboard state every frame and handles rotation / WASD / ESC */
+void	handle_input(t_game *g)
+{
+	if (mlx_is_key_down(g->mlx, MLX_KEY_ESCAPE))
+		mlx_close_window(g->mlx);
+	if (mlx_is_key_down(g->mlx, MLX_KEY_W))
+		try_move(g, g->player.dir_x * MOVE_SPEED, g->player.dir_y * MOVE_SPEED);
+	if (mlx_is_key_down(g->mlx, MLX_KEY_S))
+		try_move(g, -g->player.dir_x * MOVE_SPEED, -g->player.dir_y
+			* MOVE_SPEED);
+	if (mlx_is_key_down(g->mlx, MLX_KEY_A))
+		try_move(g, g->player.dir_y * MOVE_SPEED, -g->player.dir_x
+			* MOVE_SPEED);
+	if (mlx_is_key_down(g->mlx, MLX_KEY_D))
+		try_move(g, -g->player.dir_y * MOVE_SPEED, g->player.dir_x
+			* MOVE_SPEED);
+	if (mlx_is_key_down(g->mlx, MLX_KEY_LEFT))
+		rotate_player(g, -ROT_SPEED);
+	if (mlx_is_key_down(g->mlx, MLX_KEY_RIGHT))
+		rotate_player(g, ROT_SPEED);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raycast.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/02 17:51:17 by kfuto             #+#    #+#             */
+/*   Updated: 2026/05/07 16:13:28 by kfuto            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+/* Advances cell by cell through the grid
+	following the ray until it hits a wall */
+void	perform_dda(t_game *g, t_raycast *r)
+{
+	int	hit;
+
+	hit = 0;
+	while (!hit)
+	{
+		if (r->side_x < r->side_y)
+		{
+			r->side_x += r->delta_x;
+			r->map_x += r->step_x;
+			r->side = 0;
+		}
+		else
+		{
+			r->side_y += r->delta_y;
+			r->map_y += r->step_y;
+			r->side = 1;
+		}
+		if (get_cell(g, r->map_x, r->map_y) == '1')
+			hit = 1;
+		if (r->map_x < 0 || r->map_y < 0)
+			break ;
+		if (!g->map[r->map_y])
+			break ;
+	}
+}
+
+/* Clears the image and casts one ray per
+	screen column to render the frame */
+void	raycast(t_game *g)
+{
+	t_raycast	r;
+	int			x;
+
+	ft_memset(g->img->pixels, 0, g->img->width * g->img->height * 4);
+	x = 0;
+	while (x < WINDOW_WIDTH)
+	{
+		init_ray(g, &r, x);
+		init_dda(g, &r);
+		perform_dda(g, &r);
+		get_line_height(g, &r);
+		draw_column(g, &r, x);
+		x++;
+	}
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raycast_draw.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/10 14:55:23 by idiaz-ca          #+#    #+#             */
+/*   Updated: 2026/05/10 18:23:47 by idiaz-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+/* Writes an RGBA pixel into the image buffer at position (x, y) */
+void	put_pixel(mlx_image_t *img, int x, int y, uint32_t color)
+{
+	uint8_t	*pixel;
+
+	if (x < 0 || y < 0 || x >= (int)img->width || y >= (int)img->height)
+		return ;
+	pixel = img->pixels + (y * img->width + x) * 4;
+	pixel[0] = (color >> 24) & 0xFF;
+	pixel[1] = (color >> 16) & 0xFF;
+	pixel[2] = (color >> 8) & 0xFF;
+	pixel[3] = (color >> 0) & 0xFF;
+}
+
+/* Gets the texture corresponding to a ray */
+static mlx_texture_t	*get_texture(t_game *g, t_raycast *r)
+{
+	if (r->side == 0)
+	{
+		if (r->ray_dir_x > 0)
+			return (g->tex_we);
+		return (g->tex_ea);
+	}
+	if (r->ray_dir_y > 0)
+		return (g->tex_no);
+	return (g->tex_so);
+}
+
+/* Gets the texture X coordinate for a ray */
+static int	get_tex_x(t_game *g, t_raycast *r, mlx_texture_t *tex)
+{
+	double	wall_x;
+
+	if (r->side == 0)
+		wall_x = g->player.pos_y + r->perp_wall_dist * r->ray_dir_y;
+	else
+		wall_x = g->player.pos_x + r->perp_wall_dist * r->ray_dir_x;
+	wall_x -= floor(wall_x);
+	return ((int)(wall_x * tex->width));
+}
+
+/* Draws the wall for a screen column */
+static void	draw_wall(t_game *g, t_raycast *r, mlx_texture_t *tex, int x)
+{
+	int			tex_x;
+	int			tex_y;
+	uint32_t	color;
+	int			y;
+
+	tex_x = get_tex_x(g, r, tex);
+	y = r->draw_start;
+	if (y < 0)
+		y = 0;
+	while (y < r->draw_end && y < WINDOW_HEIGHT)
+	{
+		tex_y = (y - r->draw_start) * tex->height / r->line_height;
+		color = get_texture_pixel(tex, tex_x, tex_y);
+		put_pixel(g->img, x, y, color);
+		y++;
+	}
+}
+
+/* Draws the ceiling,
+	the wall slice, and the floor for a screen column */
+void	draw_column(t_game *g, t_raycast *r, int x)
+{
+	mlx_texture_t	*tex;
+	int				y;
+
+	tex = get_texture(g, r);
+	y = 0;
+	while (y < r->draw_start)
+		put_pixel(g->img, x, y++, g->ceiling_color);
+	draw_wall(g, r, tex, x);
+	y = r->draw_end;
+	if (y < 0)
+		y = 0;
+	while (y < WINDOW_HEIGHT)
+		put_pixel(g->img, x, y++, g->floor_color);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raycast_helper.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/02 17:51:13 by kfuto             #+#    #+#             */
+/*   Updated: 2026/05/10 14:54:09 by idiaz-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+/* Calculates the perpendicular wall distance
+	and the vertical range to draw */
+void	get_line_height(t_game *g, t_raycast *r)
+{
+	if (r->side == 0)
+		r->perp_wall_dist = (r->map_x - g->player.pos_x + (1 - r->step_x) / 2)
+			/ r->ray_dir_x;
+	else
+		r->perp_wall_dist = (r->map_y - g->player.pos_y + (1 - r->step_y) / 2)
+			/ r->ray_dir_y;
+	r->line_height = (int)(WINDOW_HEIGHT / r->perp_wall_dist);
+	r->draw_start = -r->line_height / 2 + WINDOW_HEIGHT / 2;
+	r->draw_end = r->line_height / 2 + WINDOW_HEIGHT / 2;
+}
+
+/* Returns the map character at (x, y),
+   treating out-of-bounds as a wall */
+char	get_cell(t_game *g, int x, int y)
+{
+	if (!g->map[y])
+		return ('1');
+	if (x < 0 || y < 0)
+		return ('1');
+	if (x >= (int)ft_strlen(g->map[y]))
+		return ('1');
+	return (g->map[y][x]);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   raycast_init.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/02 17:50:56 by kfuto             #+#    #+#             */
+/*   Updated: 2026/05/07 16:13:38 by kfuto            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+/* Calculates the ray direction for column x using the camera plane */
+void	init_ray(t_game *g, t_raycast *r, int x)
+{
+	r->camera_x = 2 * x / (double)WINDOW_WIDTH - 1;
+	r->ray_dir_x = g->player.dir_x + g->player.plane_x * r->camera_x;
+	r->ray_dir_y = g->player.dir_y + g->player.plane_y * r->camera_x;
+	if (r->ray_dir_x == 0)
+		r->ray_dir_x = 0.000001;
+	if (r->ray_dir_y == 0)
+		r->ray_dir_y = 0.000001;
+}
+
+/* Sets the DDA step direction and
+	initial distances from the player position */
+void	init_dda(t_game *g, t_raycast *r)
+{
+	r->map_x = (int)g->player.pos_x;
+	r->map_y = (int)g->player.pos_y;
+	r->delta_x = fabs(1 / r->ray_dir_x);
+	r->delta_y = fabs(1 / r->ray_dir_y);
+	if (r->ray_dir_x < 0)
+	{
+		r->step_x = -1;
+		r->side_x = (g->player.pos_x - r->map_x) * r->delta_x;
+	}
+	else
+	{
+		r->step_x = 1;
+		r->side_x = (r->map_x + 1.0 - g->player.pos_x) * r->delta_x;
+	}
+	if (r->ray_dir_y < 0)
+	{
+		r->step_y = -1;
+		r->side_y = (g->player.pos_y - r->map_y) * r->delta_y;
+	}
+	else
+	{
+		r->step_y = 1;
+		r->side_y = (r->map_y + 1.0 - g->player.pos_y) * r->delta_y;
+	}
+}
+
+/* Assigns direction and camera plane for
+	a player facing North or South */
+static void	set_dir_ns(t_game *g, char dir)
+{
+	if (dir == 'N')
+	{
+		g->player.dir_x = 0;
+		g->player.dir_y = -1;
+		g->player.plane_x = 0.66;
+		g->player.plane_y = 0;
+	}
+	else
+	{
+		g->player.dir_x = 0;
+		g->player.dir_y = 1;
+		g->player.plane_x = -0.66;
+		g->player.plane_y = 0;
+	}
+}
+
+/* Assigns direction and camera plane
+	based on the orientation character */
+static void	set_player_direction(t_game *g, char dir)
+{
+	if (dir == 'N' || dir == 'S')
+		set_dir_ns(g, dir);
+	else if (dir == 'E')
+	{
+		g->player.dir_x = 1;
+		g->player.dir_y = 0;
+		g->player.plane_x = 0;
+		g->player.plane_y = 0.66;
+	}
+	else
+	{
+		g->player.dir_x = -1;
+		g->player.dir_y = 0;
+		g->player.plane_x = 0;
+		g->player.plane_y = -0.66;
+	}
+}
+
+/* Scans the map looking for the player character,
+   sets its position and direction,
+   and replaces the cell with an empty space */
+void	init_player_from_map(t_game *g)
+{
+	int	y;
+	int	x;
+
+	y = 0;
+	while (g->map[y])
+	{
+		x = 0;
+		while (g->map[y][x])
+		{
+			if (g->map[y][x] == 'N' || g->map[y][x] == 'S'
+				|| g->map[y][x] == 'E' || g->map[y][x] == 'W')
+			{
+				g->player.pos_x = x + 0.5;
+				g->player.pos_y = y + 0.5;
+				set_player_direction(g, g->map[y][x]);
+				g->map[y][x] = '0';
+				return ;
+			}
+			x++;
+		}
+		y++;
+	}
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   textures.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/10 13:47:08 by idiaz-ca          #+#    #+#             */
+/*   Updated: 2026/05/10 18:47:17 by idiaz-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+/* Gets the pixel of a texture at the given coordinates */
+uint32_t	get_texture_pixel(mlx_texture_t *tex, int x, int y)
+{
+	uint8_t	*p;
+
+	p = &tex->pixels[(y * tex->width + x) * 4];
+	return ((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]);
+}
+
+/* Loads the textures */
+void	load_textures(t_game *game)
+{
+	game->tex_no = mlx_load_png(game->no);
+	game->tex_so = mlx_load_png(game->so);
+	game->tex_we = mlx_load_png(game->we);
+	game->tex_ea = mlx_load_png(game->ea);
+	if (!game->tex_no || !game->tex_so || !game->tex_we || !game->tex_ea)
+	{
+		ft_putstr_fd("Error loading textures\n", 2);
+		exit(1);
+	}
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/09 12:23:44 by idiaz-ca          #+#    #+#             */
+/*   Updated: 2026/05/19 13:35:24 by pabalvar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+// Checks that there is exactly one player in the map
+void	validate_player(char **map)
+{
+	int	i;
+	int	j;
+	int	count;
+
+	i = 0;
+	count = 0;
+	while (map[i])
+	{
+		j = 0;
+		while (map[i][j])
+		{
+			if (map[i][j] == 'N' || map[i][j] == 'S' || map[i][j] == 'E'
+				|| map[i][j] == 'W')
+				count++;
+			j++;
+		}
+		i++;
+	}
+	if (count != 1)
+	{
+		ft_putstr_fd("Error: Invalid number of players\n", 2);
+		exit(1);
+	}
+}
+
+/* Validates a map character and checks whether the cell is enclosed */
+static void	validate_map_cell(char **map, int y, int x)
+{
+	if (map[y][x] != '0' && map[y][x] != '1' && map[y][x] != 'N'
+		&& map[y][x] != 'S' && map[y][x] != 'E' && map[y][x] != 'W'
+		&& map[y][x] != ' ' && map[y][x] != '\n')
+	{
+		ft_putstr_fd("Error: Invalid map character\n", 2);
+		exit(1);
+	}
+	if (map[y][x] == '0' || map[y][x] == 'N' || map[y][x] == 'S'
+		|| map[y][x] == 'E' || map[y][x] == 'W')
+	{
+		if (!is_valid_cell(map, y + 1, x) || !is_valid_cell(map, y - 1, x)
+			|| !is_valid_cell(map, y, x + 1) || !is_valid_cell(map, y, x - 1))
+		{
+			ft_putstr_fd("Error: Map not closed\n", 2);
+			exit(1);
+		}
+	}
+}
+
+/* Validates that the map is enclosed
+	(there are no spaces around '0' cells or players) */
+void	validate_map_closed(char **map)
+{
+	int	y;
+	int	x;
+
+	y = 0;
+	while (map[y])
+	{
+		x = 0;
+		while (map[y][x])
+		{
+			validate_map_cell(map, y, x);
+			x++;
+		}
+		y++;
+	}
+}
+
+/* Adds a line to the string array (file) and returns
+	the new array (frees the old one) */
+static char	**add_line(char **file, char *line, int size)
+{
+	char	**new;
+	int		i;
+
+	new = malloc(sizeof(char *) * (size + 2));
+	if (!new)
+	{
+		free(file);
+		return (NULL);
+	}
+	i = 0;
+	while (i < size)
+	{
+		new[i] = file[i];
+		i++;
+	}
+	new[i] = line;
+	new[i + 1] = NULL;
+	
+	free(file);
+	return (new);
+}
+
+// Reads the file line by line and stores it in a string array
+char	**read_file(char *filename)
+{
+	int		fd;
+	char	*line;
+	char	**file;
+	int		i;
+
+	i = 0;
+	file = NULL;
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+		return (NULL);
+	line = get_next_line(fd);
+	while (line)
+	{
+		file = add_line(file, line, i);
+		if (!file)
+			return (NULL);
+		i++;
+		line = get_next_line(fd);
+	}
+	close(fd);
+	free(line);
+	return (file);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_color.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/14 16:57:53 by idiaz-ca          #+#    #+#             */
+/*   Updated: 2026/05/14 17:00:59 by idiaz-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+static int	get_rgb_value(char **line)
+{
+	int	value;
+
+	if (!ft_isdigit(**line))
+	{
+		ft_putstr_fd("Error: Invalid color\n", 2);
+		exit(1);
+	}
+	value = ft_atoi(*line);
+	if (value < 0 || value > 255)
+	{
+		ft_putstr_fd("Error: Color out of range\n", 2);
+		exit(1);
+	}
+	while (ft_isdigit(**line))
+		(*line)++;
+	return (value);
+}
+
+void	parse_color(char *line, int rgb[3])
+{
+	int	i;
+
+	i = 0;
+	while (*line && (*line < '0' || *line > '9'))
+		line++;
+	while (i < 3)
+	{
+		rgb[i] = get_rgb_value(&line);
+		if (i < 2 && *line++ != ',')
+		{
+			ft_putstr_fd("Error: Invalid color format\n", 2);
+			exit(1);
+		}
+		i++;
+	}
+	while (*line == ' ' || *line == '\n')
+		line++;
+	if (*line)
+	{
+		ft_putstr_fd("Error: Extra characters after color values\n", 2);
+		exit(1);
+	}
+}
+
+/* Converts RGB to RGBA (adding an alpha channel with value 255)
+	The RGBA format is represented as 0xRRGGBBAA,
+	where AA is the alpha channel shifted 8 bits to the left.
+	255 represents the alpha value (fully opaque). */
+uint32_t	rgb_to_hex(int r, int g, int b)
+{
+	return ((r << 24) | (g << 16) | (b << 8) | 255);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_config.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/02 19:00:14 by kfuto             #+#    #+#             */
+/*   Updated: 2026/05/14 16:59:35 by idiaz-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+static void	parse_element(char *line, t_game *game, int *has_f, int *has_c)
+{
+	if (starts_with(line, "NO "))
+		parse_texture(line, &game->no, "NO");
+	else if (starts_with(line, "SO "))
+		parse_texture(line, &game->so, "SO");
+	else if (starts_with(line, "WE "))
+		parse_texture(line, &game->we, "WE");
+	else if (starts_with(line, "EA "))
+		parse_texture(line, &game->ea, "EA");
+	else if (starts_with(line, "F "))
+	{
+		if (*has_f)
+			return (printf("Error: duplicate F\n"), exit(1));
+		parse_color(line, game->f);
+		*has_f = 1;
+	}
+	else if (starts_with(line, "C "))
+	{
+		if (*has_c)
+			return (printf("Error: duplicate C\n"), exit(1));
+		parse_color(line, game->c);
+		*has_c = 1;
+	}
+	else
+		return (printf("Error: invalid config line\n"), exit(1));
+}
+
+static void	check_config(t_game *game, int has_f, int has_c)
+{
+	if (!game->no || !game->so || !game->we || !game->ea)
+		return (printf("Error: missing texture\n"), exit(1));
+	if (!has_f)
+		return (printf("Error: missing floor color\n"), exit(1));
+	if (!has_c)
+		return (printf("Error: missing ceiling color\n"), exit(1));
+	game->floor_color = rgb_to_hex(game->f[0], game->f[1], game->f[2]);
+	game->ceiling_color = rgb_to_hex(game->c[0], game->c[1], game->c[2]);
+}
+
+void	parse_config(char **config, t_game *game)
+{
+	int		i;
+	int		has_f;
+	int		has_c;
+	char	*line;
+
+	i = 0;
+	has_f = 0;
+	has_c = 0;
+	game->no = NULL;
+	game->so = NULL;
+	game->we = NULL;
+	game->ea = NULL;
+	while (config[i])
+	{
+		line = config[i];
+		while (*line == ' ')
+			line++;
+		if (*line != '\n' && *line != '\0')
+			parse_element(line, game, &has_f, &has_c);
+		i++;
+	}
+	check_config(game, has_f, has_c);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_helper.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/02 19:00:06 by kfuto             #+#    #+#             */
+/*   Updated: 2026/05/11 10:39:45 by idiaz-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+/* Helper to determine whether a line is empty
+	(spaces only or newline only) */
+int	is_empty_line(char *line)
+{
+	int	i;
+
+	i = 0;
+	if (!line)
+		return (1);
+	while (line[i])
+	{
+		if (line[i] != ' ' && line[i] != '\n')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+/* Helper to determine whether a line belongs
+	to the map (returns 1) or the configuration (returns 0) */
+int	is_map_line(char *line)
+{
+	int	i;
+
+	i = 0;
+	if (!line || is_empty_line(line))
+		return (0);
+	while (line[i] == ' ')
+		i++;
+	if (line[i] != '1' && line[i] != '0' && line[i] != 'N' && line[i] != 'S'
+		&& line[i] != 'E' && line[i] != 'W')
+		return (0);
+	while (line[i])
+	{
+		if (line[i] != ' ' && line[i] != '1' && line[i] != '0' && line[i] != 'N'
+			&& line[i] != 'S' && line[i] != 'E' && line[i] != 'W'
+			&& line[i] != '\n')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+/* Returns 1 if the line is a valid configuration line
+	(NO, SO, WE, EA, F or C) */
+int	is_config_line(char *line)
+{
+	int	i;
+
+	i = 0;
+	while (line[i] == ' ')
+		i++;
+	return (ft_strncmp(&line[i], "NO ", 3) == 0 || ft_strncmp(&line[i], "SO ",
+			3) == 0 || ft_strncmp(&line[i], "WE ", 3) == 0
+		|| ft_strncmp(&line[i], "EA ", 3) == 0 || ft_strncmp(&line[i], "F ",
+			2) == 0 || ft_strncmp(&line[i], "C ", 2) == 0);
+}
+
+/* Helper to validate that a map cell is valid */
+int	is_valid_cell(char **map, int y, int x)
+{
+	if (y < 0 || x < 0)
+		return (0);
+	if (!map[y])
+		return (0);
+	if (x >= (int)ft_strlen(map[y]))
+		return (0);
+	if (map[y][x] == '\n' || map[y][x] == '\0')
+		return (0);
+	return (1);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_texture.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/14 16:58:07 by idiaz-ca          #+#    #+#             */
+/*   Updated: 2026/05/14 17:00:42 by idiaz-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+// Checks whether line starts with prefix
+int	starts_with(char *line, char *prefix)
+{
+	int	len;
+
+	len = 0;
+	while (prefix[len] && line[len] == prefix[len])
+		len++;
+	return (prefix[len] == '\0');
+}
+
+/* Extracts the path from "NO ./a.png"
+	-> "./a.png" (spaces and newline characters must be skipped) */
+static char	*extract_path(char *line)
+{
+	char	*start;
+	char	*end;
+	char	*res;
+
+	while (*line && *line != ' ')
+		line++;
+	while (*line == ' ')
+		line++;
+	start = line;
+	end = line;
+	while (*end && *end != '\n')
+		end++;
+	res = malloc(end - start + 1);
+	if (!res)
+		return (NULL);
+	ft_strlcpy(res, start, end - start + 1);
+	return (res);
+}
+
+void	parse_texture(char *line, char **texture, char *id)
+{
+	if (*texture)
+	{
+		printf("Error: duplicate %s\n", id);
+		exit(1);
+	}
+	*texture = extract_path(line);
+	if (!*texture)
+	{
+		printf("Error: malloc failed\n");
+		exit(1);
+	}
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rectangular.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/11 11:00:05 by idiaz-ca          #+#    #+#             */
+/*   Updated: 2026/05/11 11:00:06 by idiaz-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+static int	get_max_width(char **map)
+{
+	int	i;
+	int	max;
+	int	len;
+
+	i = 0;
+	max = 0;
+	while (map[i])
+	{
+		len = ft_strlen(map[i]);
+		if (map[i][len - 1] == '\n')
+			len--;
+		if (len > max)
+			max = len;
+		i++;
+	}
+	return (max);
+}
+
+static void	fill_row(char *dst, char *src, int width)
+{
+	int	j;
+
+	j = 0;
+	while (j < width)
+	{
+		if (j < (int)ft_strlen(src) && src[j] != '\n')
+			dst[j] = src[j];
+		else
+			dst[j] = ' ';
+		j++;
+	}
+	dst[j] = '\0';
+}
+
+char	**make_map_rectangular(char **map)
+{
+	char	**new_map;
+	int		height;
+	int		width;
+	int		i;
+
+	height = 0;
+	while (map[height])
+		height++;
+	width = get_max_width(map);
+	new_map = malloc(sizeof(char *) * (height + 1));
+	if (!new_map)
+		return (NULL);
+	i = 0;
+	while (i < height)
+	{
+		new_map[i] = malloc(width + 1);
+		if (!new_map[i])
+			return (NULL);
+		fill_row(new_map[i], map[i], width);
+		i++;
+	}
+	new_map[i] = NULL;
+	return (new_map);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   split_file.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/09 12:24:12 by idiaz-ca          #+#    #+#             */
+/*   Updated: 2026/05/13 17:22:46 by idiaz-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+/* Returns the index where the map starts in the `file` array */
+int	find_map_start(char **file)
+{
+	int	i;
+
+	i = 0;
+	while (file[i] && (is_config_line(file[i]) || is_empty_line(file[i])))
+		i++;
+	return (i);
+}
+
+/* Creates the configuration array by copying the first `map_start` lines */
+static char	**alloc_config(char **file, int map_start)
+{
+	char	**config;
+	int		j;
+
+	config = malloc(sizeof(char *) * (map_start + 1));
+	if (!config)
+		return (NULL);
+	j = 0;
+	while (j < map_start)
+	{
+		config[j] = file[j];
+		j++;
+	}
+	config[j] = NULL;
+	return (config);
+}
+
+/* Creates the map array (non-empty lines only) starting from `map_start` */
+static char	**alloc_map(char **file, int map_start)
+{
+	char	**map;
+	int		k;
+	int		j;
+	int		m;
+
+	k = 0;
+	while (file[map_start + k])
+		k++;
+	map = malloc(sizeof(char *) * (k + 1));
+	if (!map)
+		return (NULL);
+	j = 0;
+	m = 0;
+	while (j < k)
+	{
+		if (!is_empty_line(file[map_start + j]))
+		{
+			map[m] = file[map_start + j];
+			m++;
+		}
+		j++;
+	}
+	map[m] = NULL;
+	return (map);
+}
+
+/* Splits the file into configuration and map */
+void	split_file(char **file, char ***config, char ***map)
+{
+	int	map_start;
+
+	if (!file)
+		return ;
+	map_start = find_map_start(file);
+	*config = alloc_config(file, map_start);
+	if (!*config)
+		return ;
+	*map = alloc_map(file, map_start);
+	if (!*map)
+	{
+		free(*config);
+		*config = NULL;
+		return ;
+	}
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   validate.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/10 19:11:45 by idiaz-ca          #+#    #+#             */
+/*   Updated: 2026/05/13 17:45:19 by idiaz-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3D.h"
+
+int	check_extension(char *filename)
+{
+	int	len;
+
+	len = ft_strlen(filename);
+	if (len < 5)
+		return (0);
+	if (ft_strncmp(filename + len - 4, ".cub", 4) != 0)
+		return (0);
+	return (1);
+}
+
+static void	check_texture(char *path)
+{
+	int	fd;
+
+	fd = open(path, O_RDONLY);
+	if (fd < 0)
+	{
+		ft_putstr_fd("Error: Invalid texture path\n", 2);
+		exit(1);
+	}
+	close(fd);
+}
+
+static void	validate_map_borders(char **map)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (map[i])
+	{
+		j = 0;
+		while (map[i][j])
+		{
+			if (map[i][j] == '0')
+			{
+				if (i == 0 || j == 0 || !map[i + 1] || !map[i][j + 1] || map[i
+					- 1][j] == ' ' || map[i + 1][j] == ' ' || map[i][j
+					- 1] == ' ' || map[i][j + 1] == ' ')
+				{
+					ft_putstr_fd("Error: Map is not enclosed by walls\n", 2);
+					exit(1);
+				}
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
+void	validate_textures(t_game *game)
+{
+	check_texture(game->no);
+	check_texture(game->so);
+	check_texture(game->we);
+	check_texture(game->ea);
+}
+
+void	validate_map(t_game *game)
+{
+	validate_map_borders(game->map);
+}

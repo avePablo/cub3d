@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idiaz-ca <idiaz-ca@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 11:56:04 by idiaz-ca          #+#    #+#             */
-/*   Updated: 2026/04/07 14:30:00 by idiaz-ca         ###   ########.fr       */
+/*   Updated: 2026/05/19 13:56:02 by pabalvar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,15 @@
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 10
 # endif
-char				*get_next_line(int fd);
 
+typedef struct s_buf
+{
+	char			data[BUFFER_SIZE];
+	int				idx;
+	int				bread;
+}					t_buf;
+
+char				*get_next_line(int fd);
 int					ft_isalpha(int c);
 int					ft_isdigit(int c);
 int					ft_isalnum(int c);
