@@ -12,8 +12,8 @@
 
 #include "cub3D.h"
 
-/* Avanza celda a celda por la cuadricula 
-siguiendo el rayo hasta chocar con una pared */
+/* Advances cell by cell through the grid
+	following the ray until it hits a wall */
 void	perform_dda(t_game *g, t_raycast *r)
 {
 	int	hit;
@@ -42,8 +42,8 @@ void	perform_dda(t_game *g, t_raycast *r)
 	}
 }
 
-/* Limpia la imagen y lanza un rayo por cada 
-columna de pantalla para renderizar el frame */
+/* Clears the image and casts one ray per
+	screen column to render the frame */
 void	raycast(t_game *g)
 {
 	t_raycast	r;

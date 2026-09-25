@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/02 18:57:32 by kfuto             #+#    #+#             */
-/*   Updated: 2026/05/14 15:41:56 by kfuto            ###   ########.fr       */
+/*   Updated: 2026/05/19 13:43:47 by pabalvar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
-/* Valida el número de argumentos, la extensión del archivo y lee el contenido
-   del archivo */
+/* Validates the argument count, file extension, and reads the file content */
 static int	validate_and_read_file(int argc, char **argv, char ***file)
 {
 	if (argc != 2)
@@ -29,8 +28,8 @@ static int	validate_and_read_file(int argc, char **argv, char ***file)
 	return (0);
 }
 
-// Valida las líneas del mapa
-static void	validate_map_lines(char **file)
+// Validates the map lines
+static int	validate_map_lines(char **file)
 {
 	int	map_start;
 
@@ -40,14 +39,15 @@ static void	validate_map_lines(char **file)
 		if (is_empty_line(file[map_start]))
 		{
 			ft_putstr_fd("Error: Empty line detected within the map\n", 2);
-			exit(1);
+			return (1);
 		}
 		map_start++;
 	}
+	return (0);
 }
 
-/* Lee el fichero del mapa, lo divide en config y mapa,
-   valida el mapa e inicializa la posicion del jugador */
+/* Reads the map file, splits it into config and map,
+   validates the map, and initializes the player position */
 int	init_map(int argc, char **argv, t_game *game)
 {
 	char	**file;
@@ -56,7 +56,11 @@ int	init_map(int argc, char **argv, t_game *game)
 
 	if (validate_and_read_file(argc, argv, &file))
 		return (1);
-	validate_map_lines(file);
+	if (validate_map_lines(file))
+	{
+		free_array(file);
+		return (1);
+	}
 	split_file(file, &config, &game->map);
 	old_map = game->map;
 	game->map = make_map_rectangular(game->map);
@@ -73,18 +77,8 @@ int	init_map(int argc, char **argv, t_game *game)
 	return (0);
 }
 
-/* cierra cuando ESC presionado */
-static void	key_hook(mlx_key_data_t keydata, void *param)
-{
-	t_game	*g;
-
-	g = (t_game *)param;
-	if (keydata.key == MLX_KEY_ESCAPE && keydata.action == MLX_PRESS)
-		mlx_close_window(g->mlx);
-}
-
-/* Inicializa la ventana MLX, crea el buffer de imagen
-   y lo asocia a la ventana */
+/* Initializes the MLX window, creates the image buffer,
+	and attaches it to the window */
 int	init_mlx(t_game *game)
 {
 	game->mlx = mlx_init(WINDOW_WIDTH, WINDOW_HEIGHT, "Cub3D", true);
@@ -95,6 +89,5 @@ int	init_mlx(t_game *game)
 		return (ft_putstr_fd("Error imagen\n", 2), 1);
 	if (mlx_image_to_window(game->mlx, game->img, 0, 0) < 0)
 		return (ft_putstr_fd("Error window\n", 2), 1);
-	mlx_key_hook(game->mlx, key_hook, game);
 	return (0);
 }

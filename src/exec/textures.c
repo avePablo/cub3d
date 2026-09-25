@@ -12,7 +12,7 @@
 
 #include "cub3D.h"
 
-/*Obtiene el píxel de una textura en las coordenadas dadas*/
+/* Gets the pixel of a texture at the given coordinates */
 uint32_t	get_texture_pixel(mlx_texture_t *tex, int x, int y)
 {
 	uint8_t	*p;
@@ -21,7 +21,7 @@ uint32_t	get_texture_pixel(mlx_texture_t *tex, int x, int y)
 	return ((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]);
 }
 
-/*carga las texturas*/
+/* Loads the textures */
 void	load_textures(t_game *game)
 {
 	game->tex_no = mlx_load_png(game->no);

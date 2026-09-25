@@ -12,7 +12,7 @@
 
 #include "cub3D.h"
 
-/* Calcula la direccion del rayo para la columna x usando el plano de camara */
+/* Calculates the ray direction for column x using the camera plane */
 void	init_ray(t_game *g, t_raycast *r, int x)
 {
 	r->camera_x = 2 * x / (double)WINDOW_WIDTH - 1;
@@ -24,8 +24,8 @@ void	init_ray(t_game *g, t_raycast *r, int x)
 		r->ray_dir_y = 0.000001;
 }
 
-/* Configura la direccion de paso del DDA y
-las distancias iniciales desde la posicion del jugador */
+/* Sets the DDA step direction and
+	initial distances from the player position */
 void	init_dda(t_game *g, t_raycast *r)
 {
 	r->map_x = (int)g->player.pos_x;
@@ -54,8 +54,8 @@ void	init_dda(t_game *g, t_raycast *r)
 	}
 }
 
-/* Asigna direccion y plano de camara para
-un jugador mirando al Norte o al Sur */
+/* Assigns direction and camera plane for
+	a player facing North or South */
 static void	set_dir_ns(t_game *g, char dir)
 {
 	if (dir == 'N')
@@ -74,8 +74,8 @@ static void	set_dir_ns(t_game *g, char dir)
 	}
 }
 
-/* Asigna direccion y plano de camara
- al jugador segun el caracter de orientacion */
+/* Assigns direction and camera plane
+	based on the orientation character */
 static void	set_player_direction(t_game *g, char dir)
 {
 	if (dir == 'N' || dir == 'S')
@@ -96,9 +96,9 @@ static void	set_player_direction(t_game *g, char dir)
 	}
 }
 
-/* Recorre el mapa buscando el caracter del jugador,
-fija su posicion y direccion,
-y reemplaza la celda por un espacio vacio */
+/* Scans the map looking for the player character,
+   sets its position and direction,
+   and replaces the cell with an empty space */
 void	init_player_from_map(t_game *g)
 {
 	int	y;

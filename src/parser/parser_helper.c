@@ -12,8 +12,8 @@
 
 #include "cub3D.h"
 
-/* Función auxiliar para determinar si una línea está vacía
- (solo espacios o nueva línea)*/
+/* Helper to determine whether a line is empty
+	(spaces only or newline only) */
 int	is_empty_line(char *line)
 {
 	int	i;
@@ -30,8 +30,8 @@ int	is_empty_line(char *line)
 	return (1);
 }
 
-/* Función auxiliar para determinar si una línea pertenece
-al	mapa(devuelve 1) o a la configuración (devuelve 0)*/
+/* Helper to determine whether a line belongs
+	to the map (returns 1) or the configuration (returns 0) */
 int	is_map_line(char *line)
 {
 	int	i;
@@ -55,8 +55,8 @@ int	is_map_line(char *line)
 	return (1);
 }
 
-/* Funcion que devuelve 1 si la línea es una línea de configuración válida
- (NO,SO, WE, EA, F o C)*/
+/* Returns 1 if the line is a valid configuration line
+	(NO, SO, WE, EA, F or C) */
 int	is_config_line(char *line)
 {
 	int	i;
@@ -70,7 +70,7 @@ int	is_config_line(char *line)
 			2) == 0 || ft_strncmp(&line[i], "C ", 2) == 0);
 }
 
-/*Función auxiliar para validar que una celda del mapa es válida*/
+/* Helper to validate that a map cell is valid */
 int	is_valid_cell(char **map, int y, int x)
 {
 	if (y < 0 || x < 0)

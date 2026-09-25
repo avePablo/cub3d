@@ -1,41 +1,62 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pabalvar <pabalvar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/19 13:44:15 by pabalvar          #+#    #+#             */
+/*   Updated: 2026/05/19 13:56:13 by pabalvar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
+
+static void	refill_buffer(int fd, t_buf *buf)
+{
+	if (buf->bread <= buf->idx)
+	{
+		buf->bread = read(fd, buf->data, BUFFER_SIZE);
+		buf->idx = 0;
+	}
+}
+
+static int	read_line(int fd, t_buf *buf, char *line)
+{
+	int	i;
+
+	i = 0;
+	while (1)
+	{
+		refill_buffer(fd, buf);
+		if (buf->bread <= 0)
+			break ;
+		line[i++] = buf->data[buf->idx++];
+		if (line[i - 1] == '\n')
+			break ;
+	}
+	return (i);
+}
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE];
-	static int	index_buffer;
-	static int	bytes_read;
-	int			index;
-	char		*lines;
+	static t_buf	buf;
+	char			*line;
+	int				len;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	line = malloc(10000);
+	if (!line)
+		return (NULL);
+	len = read_line(fd, &buf, line);
+	if (len == 0)
 	{
+		free(line);
 		return (NULL);
 	}
-	lines = malloc(10000);
-	if (!lines)
-		return (NULL);
-	index = 0;
-	while (1)
-	{
-		if (bytes_read <= index_buffer)
-		{
-			bytes_read = read(fd, buffer, BUFFER_SIZE);
-			if (bytes_read <= 0)
-				break ;
-			index_buffer = 0;
-		}
-		lines[index++] = buffer[index_buffer++];
-		if (lines[index - 1] == '\n')
-			break ;
-	}
-	if (index == 0)
-	{
-		free(lines);
-		return (NULL);
-	}
-	lines[index] = '\0';
-	return (lines);
+	line[len] = '\0';
+	return (line);
 }
 
 /*#include <fcntl.h>
